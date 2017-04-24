@@ -22,10 +22,10 @@ blog_button:
 
 # Navigation buttons in the front page.
 nav:
-    - {title: 成长, description: My Projects, url: 'http://project.onevcat.com'}
-    - {title: 简历, description: My Projects, url: 'http://project.onevcat.com'}
-    - {title: 关于, description: My Projects, url: 'http://project.onevcat.com'}
-    - {title: 项目, description: My Projects, url: 'http://project.onevcat.com'}
+    - {title: 成长, description: 成长历程, url: ''}
+    - {title: 简历, description: 简历, url: ''}
+    - {title: 关于, description: 关于, url: ''}
+    - {title: 项目, description: 项目, url: ''}
     # - {title: Another Button, description: A button, url: 'http://example.com'}
 
 # Pagination
