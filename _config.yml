@@ -1,0 +1,52 @@
+# Basic
+title: Terry.King的技术博客
+subtitle: 目前在从事AI领域的研究, 精通iOS开发 与 J2EE开发
+welcome_message: 希望能够写出具有深度的博客, 记录自己的技术历程
+description: 欢迎来到我的技术博客，我是Terry.King(@Tuluobo)
+creator: <a href="www.terrylmay.com">@terry.king</a>
+
+url: "http://www.terrylmay.com"
+
+permalink: /:year/:month/:title/
+
+# Format
+highlighter: rouge
+
+# supported colors: blue, green, purple, red, orange or slate. If you need clear, leave it empty.
+cover_color: blue
+
+# The blog button should not be removed.
+blog_button:
+    title: 博客
+    description: 博客
+
+# Navigation buttons in the front page.
+nav:
+    - {title: 成长, description: My Projects, url: 'http://project.onevcat.com'}
+    - {title: 简历, description: My Projects, url: 'http://project.onevcat.com'}
+    - {title: 关于, description: My Projects, url: 'http://project.onevcat.com'}
+    - {title: 项目, description: My Projects, url: 'http://project.onevcat.com'}
+    # - {title: Another Button, description: A button, url: 'http://example.com'}
+
+# Pagination
+gems: [jekyll-paginate]
+paginate: 10
+paginate_path: "page/:num/"
+
+# Comment
+comment:
+    disqus: vno-jekyll
+    # duoshuo:
+
+# Social
+social:
+    weibo: terrylmay
+    github: terryKing1992
+    twitter: terryking
+    youtube: terrylmay
+    mail: terrylmay@gmail.com
+
+# Google Analytics
+ga:
+    # id: your_ga_id
+    # host: your_host
