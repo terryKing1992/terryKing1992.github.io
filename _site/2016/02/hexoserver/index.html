@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>如何让HexoServer 后台运行</title>
+  <meta name="description" content="在Hexo 工程目录下面创建一个app.js文件作为项目的启动文件,并将如下代码拷贝到文件中">
+  <meta name="author" content="Wei Wang">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="如何让HexoServer 后台运行">
+  <meta name="twitter:description" content="在Hexo 工程目录下面创建一个app.js文件作为项目的启动文件,并将如下代码拷贝到文件中">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="如何让HexoServer 后台运行">
+  <meta property="og:description" content="在Hexo 工程目录下面创建一个app.js文件作为项目的启动文件,并将如下代码拷贝到文件中">
+
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+  <link href="/assets/images/favicon.png" rel="shortcut icon" type="image/png">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2016/02/hexoserver/">
+  <link rel="alternate" type="application/rss+xml" title="Terry.King的技术博客" href="http://localhost:4000/feed.xml">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/assets/images/terryking_blog_background.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/#blog" title="前往 Terry.King的技术博客 的主页" class="blog-button"><img src="/assets/images/avatar_icon.jpg" width="80" alt="Terry.King的技术博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for Terry.King的技术博客" class="blog-button">Terry.King的技术博客</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">目前在从事AI领域的研究, 精通iOS开发 与 J2EE开发</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的技术博客，我是Terry.King</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        
+        <p class="panel-cover__description">希望通过本博客记录自己的技术发展历程</p>
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="博客" class="blog-button">博客</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="成长历程">成长</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="简历">简历</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="关于">关于</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="项目">项目</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+
+          <div><nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  
+  <!-- Weibo -->
+  <li class="navigation__item">
+    <a href="http://weibo.com/terrylmay" title="@terrylmay 的微博" target="_blank">
+      <i class='social fa fa-weibo'></i>
+      <span class="label">Weibo</span>
+    </a>
+  </li>
+  
+
+  
+  <!-- Github -->
+  <li class="navigation__item">
+    <a href="https://github.com/terryKing1992" title="@terryKing1992 的 Github" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+  
+  
+  
+  <!-- Twitter -->
+  <li class="navigation__item">
+    <a href="http://twitter.com/terryking" title="@terryking" target="_blank">
+      <i class='social fa fa-twitter'></i>
+      <span class="label">Twitter</span>
+    </a>
+  </li>
+  
+
+  
+
+  <!-- RSS -->
+  <li class="navigation__item">
+    <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+  
+  <!-- Email -->
+  <li class="navigation__item">
+    <a href="mailto:terrylmay@gmail.com" title="Contact me">
+      <i class='social fa fa-envelope'></i>
+      <span class="label">Email</span>
+    </a>
+  </li>
+  
+
+  </ul>
+</nav>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="panel-cover--overlay cover-blue"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2016-02-21 23:26:16 +0800" itemprop="datePublished" class="post-meta__date date">2016-02-21</time> &#8226; <span class="post-meta__tags tags">Hexo后台运行</span>
+    </div>
+    <h1 class="post-title">如何让HexoServer 后台运行</h1>
+  </header>
+
+  <section class="post">
+    <p>在Hexo 工程目录下面创建一个app.js文件作为项目的启动文件,并将如下代码拷贝到文件中</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>var spawn = require('child_process').spawn;             // 注册nodeJs子进程
+free = spawn('hexo', ['server', '-p 80']);              // 注入命令参数
+
+free.stdout.on('data', function (data) {
+    console.log('standard output:\n' + data);           // 捕获标准输出并将其打印到控制台
+});
+
+free.stderr.on('data', function (data) {
+    console.log('standard error output:\n' + data);     // 捕获标准错误输出并将其打印到控制台  
+});
+
+free.on('exit', function (code, signal) {
+    console.log('child process eixt ,exit:' + code);    // 注册子进程关闭事件
+});
+</code></pre>
+</div>
+
+<p>安装forever 或者 pm2 来启动该 Hexo Server,就可以了。</p>
+
+  </section>
+</article>
+
+<section class="read-more">
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">最近的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/03/install-vpn-on-ubuntu/" title="link to ubuntu上搭建VPN">ubuntu上搭建VPN</a></h2>
+       <p class="excerpt">点对点隧道协议（PPTP）是VPN服务的一种最简单的实现协议，其它常见的VPN类型还有：使用IPsec的第2层隧道协议（L2TP/IPsec）、安全套接字隧道协议（SSL VPN）。本文主要讨论PPTP VPN服务在Ubuntu上的安装和配置。A.使用apt源服务来安装PPTPD服务sudo apt-get updatesudo apt-get install pptpdB.安装完成之后编辑pptpd.conf配置文件sudo vi /etc/pptpd.conf#确保如下选项的配置opt...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-03-05 21:24:15 +0800" class="post-list__meta--date date">2016-03-05</time> &#8226; <span class="post-list__meta--tags tags">VPN</span><a class="btn-border-small" href=/2016/03/install-vpn-on-ubuntu/>继续阅读</a></div>
+   </div>
+   
+   
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">更早的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/regex-pattern-using-on-emotion/" title="link to 如何用正则表达式 解析 文本中的 表情标签并且渲染到界面上">如何用正则表达式 解析 文本中的 表情标签并且渲染到界面上</a></h2>
+       <p class="excerpt">最近在使用JSQMessage定制聊天界面的的时候发现，JSQMessage目前不支持表情的显示，所以要自己把表情的文本解析出来，并且显示在TextView上面。思路主要是 使用正则表达式解析，然后通过NSAttributeString进行重新拼装。表情文本大概长这个样子，让我们有个直观的认识HAHFHDJKSAHFDA[大哭]JFDSAJFKDSA[大笑]DJFLAJLFD[大哭]HAHFDKJASFHDASHFDJASHFKDAHSJFDASHFJD[大笑][大笑][大笑]HFDHAJ...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 23:10:42 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">NSRegularExpression正则表达式表情</span><a class="btn-border-small" href=/2016/02/regex-pattern-using-on-emotion/>继续阅读</a></div>
+   </div>
+   
+</section>
+
+<section class="post-comments">
+  
+    <div id="disqus_thread"></div>
+    <script>
+    
+    var disqus_config = function () {
+        this.page.url = "http://localhost:4000/2016/02/hexoserver/";
+        this.page.identifier = "/2016/02/hexoserver/";
+    };
+
+    var disqus_shortname = 'vno-jekyll';
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
+    
+  
+  
+  
+  
+</section>
+
+
+            <section class="footer">
+    <footer>
+    	<span class="footer__copyright">本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享 署名-非商业性使用-相同方式共享 4.0 国际 许可协议</a></span>
+        <span class="footer__copyright">由 <a href="https://jekyllrb.com">Jekyll</a> 于 2017-06-19 生成，感谢 <a href="https://github.com">Github</a> 为本站提供稳定的代码托管服务</span>
+        <span class="footer__copyright">本站由 <a href="www.terrylmay.com">@terry.king</a> 创建，采用 <a href="https://github.com/onevcat/vno-jekyll">Vno - Jekyll</a> 作为主题，您可以在 GitHub 找到<a href="https://github.com/terryKing1992/terryKing1992.github.io">本站源码</a> - &copy; 2017</span>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+    
+  </body>
+
+</html>

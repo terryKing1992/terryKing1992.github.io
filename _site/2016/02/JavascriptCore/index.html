@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>JavaScriptCore简介</title>
+  <meta name="description" content="##到底Javascript core是什么">
+  <meta name="author" content="Wei Wang">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="JavaScriptCore简介">
+  <meta name="twitter:description" content="##到底Javascript core是什么">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="JavaScriptCore简介">
+  <meta property="og:description" content="##到底Javascript core是什么">
+
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+  <link href="/assets/images/favicon.png" rel="shortcut icon" type="image/png">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2016/02/JavascriptCore/">
+  <link rel="alternate" type="application/rss+xml" title="Terry.King的技术博客" href="http://localhost:4000/feed.xml">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/assets/images/terryking_blog_background.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/#blog" title="前往 Terry.King的技术博客 的主页" class="blog-button"><img src="/assets/images/avatar_icon.jpg" width="80" alt="Terry.King的技术博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for Terry.King的技术博客" class="blog-button">Terry.King的技术博客</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">目前在从事AI领域的研究, 精通iOS开发 与 J2EE开发</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的技术博客，我是Terry.King</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        
+        <p class="panel-cover__description">希望通过本博客记录自己的技术发展历程</p>
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="博客" class="blog-button">博客</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="成长历程">成长</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="简历">简历</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="关于">关于</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="项目">项目</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+
+          <div><nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  
+  <!-- Weibo -->
+  <li class="navigation__item">
+    <a href="http://weibo.com/terrylmay" title="@terrylmay 的微博" target="_blank">
+      <i class='social fa fa-weibo'></i>
+      <span class="label">Weibo</span>
+    </a>
+  </li>
+  
+
+  
+  <!-- Github -->
+  <li class="navigation__item">
+    <a href="https://github.com/terryKing1992" title="@terryKing1992 的 Github" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+  
+  
+  
+  <!-- Twitter -->
+  <li class="navigation__item">
+    <a href="http://twitter.com/terryking" title="@terryking" target="_blank">
+      <i class='social fa fa-twitter'></i>
+      <span class="label">Twitter</span>
+    </a>
+  </li>
+  
+
+  
+
+  <!-- RSS -->
+  <li class="navigation__item">
+    <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+  
+  <!-- Email -->
+  <li class="navigation__item">
+    <a href="mailto:terrylmay@gmail.com" title="Contact me">
+      <i class='social fa fa-envelope'></i>
+      <span class="label">Email</span>
+    </a>
+  </li>
+  
+
+  </ul>
+</nav>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="panel-cover--overlay cover-blue"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2016-02-21 19:16:26 +0800" itemprop="datePublished" class="post-meta__date date">2016-02-21</time> &#8226; <span class="post-meta__tags tags">JavascriptCore执行引擎</span>
+    </div>
+    <h1 class="post-title">JavaScriptCore简介</h1>
+  </header>
+
+  <section class="post">
+    <p>##<strong>到底Javascript core是什么</strong></p>
+
+<p>前端开发的同学应该知道，浏览器核心模块主要是渲染引擎和JavaScript引擎两部分组成。前者用于处理页面布局，渲染及DOM结构等，后者用于JavaScript的解析、执行及DOM交互等。
+JavaScriptCore是一种JavaScript引擎，主要为webkit提供脚本处理能力（其主要以safari浏览器为代表）。JavaScriptCore是开源webkit的一部分。</p>
+
+<!-- more -->
+
+<p>##苹果为什么要在native应用中（非webview）引入JavaScript</p>
+
+<p>首先，脱离了浏览器外壳和繁重的UI布局和渲染的JavaScript引擎，无疑可以将JavaScript的能力更轻便地、高性能地带给原生的iOS应用，给应用开发者提供更多的想象力（无论是PC还是移动的浏览器，UI和GUI部分都是最重要的性能瓶颈和优化点）。</p>
+
+<p>其次，在移动开发场景中确实有众多的开发者对JavaScript有需求。在google上搜索”embed javascript engine ios”可以得到大量的实践和博文。</p>
+
+<p>再次，苹果已经在mac上得到很不错的实践和反响。引入JavaScriptCore即扩大了SDK能力又讨好了开发者，何乐不为呢。</p>
+
+<p>##<strong>Javascript Core能做什么</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>1、OC 调用 JS代码
+2、JS代码 调用 OC 代码
+</code></pre>
+</div>
+
+<p>##Javascript中有哪些必须知道的类</p>
+
+<p>在开始使用Javascript Core编程之前，需要了解该框架中的几个主类。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>#ifndef JavaScriptCore_h
+#define JavaScriptCore_h
+
+#include &lt;JavaScriptCore/JavaScript.h&gt;
+#include &lt;JavaScriptCore/JSStringRefCF.h&gt;
+
+#if defined(__OBJC__) &amp;&amp; JSC_OBJC_API_ENABLED
+
+#import "JSContext.h"
+#import "JSValue.h"
+#import "JSManagedValue.h"
+#import "JSVirtualMachine.h"
+#import "JSExport.h"
+
+#endif
+
+#endif /* JavaScriptCore_h */
+</code></pre>
+</div>
+
+<p>JSContext: JS代码的上下文，主要保持JS 中的一些变量 以及方法。
+JSValue: js 变量或者方法 在 原生里面对应的对象。
+JSManagedValue：防止强引用JSValue可能会造成内存泄露，使用JSManagedValue能够有效的管理JSValue的内存。(目前我就知道这个功能)
+JSVirtualMachine：JS代码的执行环境
+JSExport：用来告诉JSContext 原生提供哪些JSAPI 供JS 使用。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>##JS对象 与OC 对象之间的映射关系又是怎样的呢？
+  Objective-C type  |   JavaScript type
+--------------------+---------------------
+        nil         |     undefined
+       NSNull       |        null
+      NSString      |       string
+      NSNumber      |   number, boolean
+    NSDictionary    |   Object object
+      NSArray       |    Array object
+       NSDate       |     Date object
+      NSBlock (1)   |   Function object (1)
+         id (2)     |   Wrapper object (2)
+       Class (3)    | Constructor object (3)
+##在OC代码中我们应该怎么使用Javascript Core
+JSContext *context = [[JSContext alloc] init];
+
+NSString *javaScript = @"var sum = 1 + 2;";
+[context evaluateScript:javaScript];
+
+JSValue *sum = context[@"sum"];
+NSLog(@"OC 执行JS 代码结果:%@", sum);
+JS 调用OC代码：
+ JSContext *context = [[JSContext alloc] init];
+
+//在OC中实现对应的JS函数log，并且加入到JS上下文中
+context[@"log"] = ^(JSValue *value) {
+    NSLog(@"%@", [value toString]);
+};
+
+NSString *javaScript = @"log('我是原生的函数打印出来的')";
+[context evaluateScript:javaScript];
+</code></pre>
+</div>
+
+<p>JS 调用OC代码 其实分几步进行：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>- 由原生实现log函数，并且加入到JS的上下文中；
+- 写JS代码 调用 原生的log函数
+- 有JSContext 执行 JS代码。只不过在原生执行JS代码的时候，JS又调用了原生的函数而已。
+</code></pre>
+</div>
+
+<p>##<strong>如何实现 面向对象的JS调用</strong></p>
+
+<p>加入我们要在JS中这么写代码调用原生函数console.log(params)原生应该怎么实现；</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1">//
+//  JSExecutor.h
+//  JavascriptCore
+//
+//  Created by terry on 15/12/19.
+//
+</span>
+<span class="cp">#import &lt;Foundation/Foundation.h&gt;
+#import &lt;JavaScriptCore/JavaScriptCore.h&gt;
+</span>
+<span class="k">@protocol</span> <span class="nc">BaseJSAPI</span><span class="o">&lt;</span><span class="n">JSExport</span><span class="o">&gt;</span>
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">log</span><span class="o">:</span><span class="p">(</span><span class="n">JSValue</span> <span class="o">*</span><span class="p">)</span><span class="n">params</span><span class="p">;</span>
+<span class="k">@end</span>
+
+<span class="k">@interface</span> <span class="nc">JSExecutor</span> <span class="p">:</span> <span class="nc">NSObject</span><span class="o">&lt;</span><span class="n">BaseJSAPI</span><span class="o">&gt;</span>
+<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">JSContext</span> <span class="o">*</span><span class="n">context</span><span class="p">;</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="n">JSValue</span> <span class="o">*</span><span class="p">)</span><span class="nf">evalueScript</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">script</span><span class="p">;</span>
+<span class="k">-</span> <span class="p">(</span><span class="n">JSValue</span> <span class="o">*</span><span class="p">)</span><span class="nf">jsValueForKey</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span>
+<span class="k">@end</span>
+</code></pre>
+</div>
+
+<p>自己在对JSContext的函数封装一层，并且定义需要export出去的API，比如头文件BaseJSAPI中的log方法，同时，另外一个类实现这个方法。并将自己想要的console加入到context中。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1">//
+//  JSExecutor.m
+//  JavascriptCore
+//
+//  Created by terry on 15/12/19.
+//
+</span>
+<span class="cp">#import "JSExecutor.h"
+</span>
+<span class="k">@implementation</span> <span class="nc">JSExecutor</span>
+<span class="k">-</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="n">init</span> <span class="p">{</span>
+    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nf">init</span><span class="p">];</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">_context</span> <span class="o">=</span> <span class="p">[[</span><span class="n">JSContext</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">init</span><span class="p">];</span>
+        <span class="p">[</span><span class="n">self</span> <span class="nf">initJSContextMechine</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">initJSContextMechine</span> <span class="p">{</span>
+    <span class="n">__weak</span> <span class="n">typeof</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="n">weakSelf</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+
+    <span class="n">_context</span><span class="p">[</span><span class="s">@"console"</span><span class="p">]</span> <span class="o">=</span> <span class="n">weakSelf</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">log</span><span class="o">:</span><span class="p">(</span><span class="n">JSValue</span> <span class="o">*</span><span class="p">)</span><span class="n">params</span> <span class="p">{</span>
+    <span class="n">NSLog</span><span class="p">(</span><span class="s">@"%@"</span><span class="p">,</span> <span class="p">[</span><span class="n">params</span> <span class="nf">toString</span><span class="p">]);</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="n">JSValue</span> <span class="o">*</span><span class="p">)</span><span class="n">evalueScript</span><span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">script</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">_context</span> <span class="nf">evaluateScript</span><span class="p">:</span><span class="n">script</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="n">JSValue</span> <span class="o">*</span><span class="p">)</span><span class="n">jsValueForKey</span><span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">key</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">_context</span><span class="p">[</span><span class="nf">key</span><span class="p">];</span>
+<span class="p">}</span>
+<span class="k">@end</span>
+</code></pre>
+</div>
+
+<p>这样当我们在JS中调用OC代码打印的时候就可以这么写了，console.log(“123”);</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>JSExecutor *executor = [[JSExecutor alloc] init];
+
+NSString *javaScript = @"console.log('我是JSExecutor中提供的log函数打印出来的')";
+[executor evalueScript:javaScript];
+</code></pre>
+</div>
+
+<p>因为JSExecutor实现了JSExport协议，在executor初始化的时候也初始化了JSContext，而JSContext 会把该executor对象对应的类 加入到JSContext的JSWrapperMap。这样，在JS引擎在看到console的时候，会找到executor这个对象，然后再执行executor.log();这样就相当于在原生实现了面向对象的API 提供。</p>
+
+<p>如果想定义其他的JS方法，只需要在BaseJSAPI中增加新的方法，并且在JSExecutor 中实现即可。</p>
+
+  </section>
+</article>
+
+<section class="read-more">
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">最近的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/use-sublime-open-file/" title="link to 如何通过subl打开文本文件">如何通过subl打开文本文件</a></h2>
+       <p class="excerpt">如何通过命令行打开某一个文本文件	$cd ~	$open .bash_profile将 alias subl=\’’/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl’\’加入到配置文件的最后一行,并保存重新打开命令行,然后 使用命令行$subl .bash_profile看一下sublime 是不是把你的配置文件打开了.如果没法打开的话，看一下 你应用程序下的sublime叫什么名字,比如Sublime Text ...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 19:22:11 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags"></span><a class="btn-border-small" href=/2016/02/use-sublime-open-file/>继续阅读</a></div>
+   </div>
+   
+   
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">更早的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/gcd-api/" title="link to GCD API详解">GCD API详解</a></h2>
+       <p class="excerpt">前言:GCD API 详解GCD 在IOS 多线程编程中起着举足轻重的作用；GCD相对来说是更加抽象化的API，但是它比较靠近底层一些，都是使用C语言来实现的。下面我们一起走进GCD的世界，探索它里面的奥秘；一、Dispatch Queue从名字(分发队列)我们就可以看出，这个是任务都会进入到这个队列中等待处理。开发者是需要把要执行的任务添加到该队列中即可。```Objective-Cdispatch_async(dispatch_get_main_queue(), ^{    NSLog...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 19:11:21 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">GCD多线程</span><a class="btn-border-small" href=/2016/02/gcd-api/>继续阅读</a></div>
+   </div>
+   
+</section>
+
+<section class="post-comments">
+  
+    <div id="disqus_thread"></div>
+    <script>
+    
+    var disqus_config = function () {
+        this.page.url = "http://localhost:4000/2016/02/JavascriptCore/";
+        this.page.identifier = "/2016/02/JavascriptCore/";
+    };
+
+    var disqus_shortname = 'vno-jekyll';
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
+    
+  
+  
+  
+  
+</section>
+
+
+            <section class="footer">
+    <footer>
+    	<span class="footer__copyright">本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享 署名-非商业性使用-相同方式共享 4.0 国际 许可协议</a></span>
+        <span class="footer__copyright">由 <a href="https://jekyllrb.com">Jekyll</a> 于 2017-06-19 生成，感谢 <a href="https://github.com">Github</a> 为本站提供稳定的代码托管服务</span>
+        <span class="footer__copyright">本站由 <a href="www.terrylmay.com">@terry.king</a> 创建，采用 <a href="https://github.com/onevcat/vno-jekyll">Vno - Jekyll</a> 作为主题，您可以在 GitHub 找到<a href="https://github.com/terryKing1992/terryKing1992.github.io">本站源码</a> - &copy; 2017</span>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+    
+  </body>
+
+</html>

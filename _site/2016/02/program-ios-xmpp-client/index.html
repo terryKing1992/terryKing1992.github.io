@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>IOS XMPP客户端开发详解</title>
+  <meta name="description" content="由上篇文章将了如何在MAC本地搭建一个Openfire服务器，今天我们就要着手使用 XMPPFramework来开发 基于XMPP 协议的即时通讯IOS 客户端系统。今天主要看登录功能开发，可能有人会质疑，我们都没有开发注册功能，怎么开发登录功能。注册账号我们有捷径，服务器都在本地，当然很好做了。另外就是通过MA...">
+  <meta name="author" content="Wei Wang">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="IOS XMPP客户端开发详解">
+  <meta name="twitter:description" content="由上篇文章将了如何在MAC本地搭建一个Openfire服务器，今天我们就要着手使用 XMPPFramework来开发 基于XMPP 协议的即时通讯IOS 客户端系统。今天主要看登录功能开发，可能有人会质疑，我们都没有开发注册功能，怎么开发登录功能。注册账号我们有捷径，服务器都在本地，当然很好做了。另外就是通过MA...">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="IOS XMPP客户端开发详解">
+  <meta property="og:description" content="由上篇文章将了如何在MAC本地搭建一个Openfire服务器，今天我们就要着手使用 XMPPFramework来开发 基于XMPP 协议的即时通讯IOS 客户端系统。今天主要看登录功能开发，可能有人会质疑，我们都没有开发注册功能，怎么开发登录功能。注册账号我们有捷径，服务器都在本地，当然很好做了。另外就是通过MA...">
+
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+  <link href="/assets/images/favicon.png" rel="shortcut icon" type="image/png">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2016/02/program-ios-xmpp-client/">
+  <link rel="alternate" type="application/rss+xml" title="Terry.King的技术博客" href="http://localhost:4000/feed.xml">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/assets/images/terryking_blog_background.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/#blog" title="前往 Terry.King的技术博客 的主页" class="blog-button"><img src="/assets/images/avatar_icon.jpg" width="80" alt="Terry.King的技术博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for Terry.King的技术博客" class="blog-button">Terry.King的技术博客</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">目前在从事AI领域的研究, 精通iOS开发 与 J2EE开发</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的技术博客，我是Terry.King</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        
+        <p class="panel-cover__description">希望通过本博客记录自己的技术发展历程</p>
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="博客" class="blog-button">博客</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="成长历程">成长</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="简历">简历</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="关于">关于</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="项目">项目</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+
+          <div><nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  
+  <!-- Weibo -->
+  <li class="navigation__item">
+    <a href="http://weibo.com/terrylmay" title="@terrylmay 的微博" target="_blank">
+      <i class='social fa fa-weibo'></i>
+      <span class="label">Weibo</span>
+    </a>
+  </li>
+  
+
+  
+  <!-- Github -->
+  <li class="navigation__item">
+    <a href="https://github.com/terryKing1992" title="@terryKing1992 的 Github" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+  
+  
+  
+  <!-- Twitter -->
+  <li class="navigation__item">
+    <a href="http://twitter.com/terryking" title="@terryking" target="_blank">
+      <i class='social fa fa-twitter'></i>
+      <span class="label">Twitter</span>
+    </a>
+  </li>
+  
+
+  
+
+  <!-- RSS -->
+  <li class="navigation__item">
+    <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+  
+  <!-- Email -->
+  <li class="navigation__item">
+    <a href="mailto:terrylmay@gmail.com" title="Contact me">
+      <i class='social fa fa-envelope'></i>
+      <span class="label">Email</span>
+    </a>
+  </li>
+  
+
+  </ul>
+</nav>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="panel-cover--overlay cover-blue"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2016-02-21 19:59:49 +0800" itemprop="datePublished" class="post-meta__date date">2016-02-21</time> &#8226; <span class="post-meta__tags tags">XMPP报文</span>
+    </div>
+    <h1 class="post-title">IOS XMPP客户端开发详解</h1>
+  </header>
+
+  <section class="post">
+    <p>由上篇文章将了如何在MAC本地搭建一个Openfire服务器，今天我们就要着手使用 XMPPFramework来开发 基于XMPP 协议的即时通讯IOS 客户端系统。今天主要看登录功能开发，可能有人会质疑，我们都没有开发注册功能，怎么开发登录功能。注册账号我们有捷径，服务器都在本地，当然很好做了。另外就是通过MAC 自带的客户端 Messages 进行注册。</p>
+
+<p>首先，我们需要搭建起来IOS 的工程，并且将XMPPFramework 引入到我们的工程中来,当然我们可以使用源码
+直接导入，也可以使用cocoapods来进行依赖。本文直接使用源码来进行开发。由于在Github上的源码有一些问题，所以大家可以来https://github.com/TerryLMay/TMXMPPClient/tree/master/TMXMPPClient/ThirdTools/XMPPFrameworkio下载相关的XMPPFramework相关的代码。</p>
+
+<p>下载关于XMPPFramework的代码之后,我们需要做的是 创建一个工程，然后将源代码导入到我们的工程中去。当然直接导入并且编译会出现libxml找不到的问题。我们需要在工程中导入libxml2.tbd(ios 9之后的名称) 以及 libresolv.9.tbd(ios 9之后的后缀)。然后在Build Setting的Head search 中加上 头文件的链接地址
+${SDKROOT}/usr/include/libxml2</p>
+
+<p>这之后，重新编译工程即可编译成功。后面，我们需要做的就是开发登录功能了，在开始之前，我们还是先看一下怎么注册一个账号吧；登录Openfire后台，创建一个用户。</p>
+
+<p>通过在浏览器中输入 (前提 是 openfire服务器以及mysql服务器都已经启动了)</p>
+
+<p>127.0.0.1:9090</p>
+
+<p>进入如下界面</p>
+
+<p><img src="/img/blogImages/XMPPLogin/OpenFireServerHomePage.png" /></p>
+
+<p>点击左上角用户/组 进入用户管理界面</p>
+
+<p><img src="/img/blogImages/XMPPLogin/OpenfireUserHomePage.png" /></p>
+
+<p>然后点击 左侧 导航栏中的新建用户 填写好用户信息就可以了。</p>
+
+<p><img src="/img/blogImages/XMPPLogin/OpenfireCreateUserPage.png" /></p>
+
+<p>到这边基本上用户注册环节 已经结束了。</p>
+
+<p>开发 登录功能，基本上包括 登录界面的开发、XMPP登录逻辑的开发。登录界面我们可以 随便搭建一个登录界面就可以了。我今天主要是说一下 XMPP登录部分。</p>
+
+<p>首先，创建关于XMPPLoginManager类，实现XMPPStreamDelegate，我定义了自己的一个宏，表示使用的Openfire服务器的地址 以及 端口号</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>```Objective-C
+#define LocalOpenfire 1
+
+#if LocalOpenfire
+
+#define HOST_NAME @"127.0.0.1"
+#define HOST_PORT 5222
+#define CONNECT_IDENTIFIER @"@"
+
+#endif
+
+#define TIME_OUT 20
+
+//然后 定义XMPPStream、XMPPReconnect实例，并且初始化
+- (void)initXMPPStream {
+    self.loginXmppStream = [[XMPPStream alloc] init];
+    [self.loginXmppStream addDelegate:self delegateQueue:dispatch_get_main_queue()];
+}
+
+- (void)initXMPPReconnect {
+    self.loginReconnectManager = [[XMPPReconnect alloc] init];
+    [self.loginReconnectManager activate:self.loginXmppStream];
+    // You can also optionally add delegates to the module.
+    [self.loginReconnectManager addDelegate:self delegateQueue:dispatch_get_main_queue()];
+}
+
+//定义 Login按钮点击之后的点击事件调用 XMPPLoginManager中的如下方法进行连接：
+
+#pragma mark -- connect xmpp method for login viewController
+- (void)connectXMPPServer:(NSString *)userName password:(NSString *)password {
+    self.userName = userName;
+    self.password = password;
+
+    NSString *myJid = [NSString stringWithFormat:@"%@%@%@", userName, CONNECT_IDENTIFIER, HOST_NAME];
+    self.loginXmppStream.myJID = [XMPPJID jidWithString:myJid];
+
+    self.loginXmppStream.hostName = HOST_NAME;
+    self.loginXmppStream.hostPort = HOST_PORT;
+
+    NSError *connectError = nil;
+    [self.loginXmppStream connectWithTimeout:TIME_OUT error:&amp;connectError];
+
+    if (connectError) {
+        NSLog(@"%@", connectError);
+        [self.loginDelegate loginXMPPConnectError:connectError];
+    }
+}
+
+//后面就是处理XMPPStream的各种回调就可以了
+
+#pragma mark -- xmppstream delegate
+//连接xmpp成功之后,使用密码认证
+- (void)xmppStreamDidConnect:(XMPPStream *)sender {
+
+    NSError *authError = nil;
+    [self.loginXmppStream authenticateWithPassword:self.password error:&amp;authError];
+
+    if (authError) {
+        NSLog(@"%@", authError);
+        [self.loginDelegate loginXMPPDidNotAuthenticate];
+    }
+}
+
+//认证通过之后的处理
+- (void)xmppStreamDidAuthenticate:(XMPPStream *)sender {
+    NSLog(@"%@", @"认证通过");
+    [self.loginDelegate loginXMPPDidAuthenticate];
+}
+
+//连接服务器的超时处理
+- (void)xmppStreamConnectDidTimeout:(XMPPStream *)sender {
+    NSLog(@"连接超时");
+    [self.loginDelegate loginXMPPConnectDidTimeout];
+}
+
+//认证没有通过处理
+- (void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(DDXMLElement *)error {
+    NSLog(@"认证失败");
+    [self.loginDelegate loginXMPPDidNotAuthenticate];
+}
+```
+</code></pre>
+</div>
+
+<p>基本上这样就可以登录了，登录成功之后，可以跳转到相应的界面。提一下我们 能看到的XMPP交互流程 包括：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>1、XMPP 使用用户名去连接服务器；
+2、XMPP 连接成功之后，通过密码去服务器认证
+3、认证成功之后，处理自己想处理的一下事情。
+</code></pre>
+</div>
+
+<p>但其实XMPP 报文交互包括好几步，我就从别人那边摘录一点交互细节过来，就不自己一个个的抓包看了。
+C1: 客户端初始化流给服务器</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;stream:stream to="127.0.0.1" xmlns="jabber:client"
+	xmlns:stream="http://etherx.jabber.org/streams" version="1.0"&gt;
+</code></pre>
+</div>
+
+<p>S1: 服务器向客户端发送流标签作为应答:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version='1.0' encoding='UTF-8'?&gt;</span><span class="nt">&lt;stream:stream</span>
+	<span class="na">xmlns:stream=</span><span class="s">"http://etherx.jabber.org/streams"</span> <span class="na">xmlns=</span><span class="s">"jabber:client"</span> <span class="na">from=</span><span class="s">"192.168.1.185"</span> <span class="na">id=</span><span class="s">"fb0cfcad"</span> <span class="na">xml:lang=</span><span class="s">"en"</span> <span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
+</code></pre>
+</div>
+
+<p>S2: 发送 STARTTLS范围</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;stream:features&gt;
+&lt;starttls xmlns="urn:ietf:params:xml:ns: xmpp-tls"&gt;&lt;/starttls&gt; &lt;mechanisms xmlns="urn:ietf:params:xml:ns:xmpp-sasl"&gt;
+&lt;mechanism&gt;PLAIN&lt;/mechanism&gt; &lt;mechanism&gt;CRAM-MD5&lt;/mechanism&gt; &lt;mechanism&gt;ANONYMOUS&lt;/mechanism&gt; &lt;mechanism&gt;DIGEST-MD5&lt;/mechanism&gt; &lt;mechanism&gt;JIVE-SHAREDSECRET&lt;/mechanism&gt; &lt;/mechanisms&gt;
+&lt;compression xmlns="http://jabber.org/features/compress"&gt;
+&lt;method&gt;zlib&lt;/method&gt; &lt;/compression&gt;
+&lt;auth xmlns="http://jabber.org/features/iq-auth"/&gt;
+&lt;register xmlns="http://jabber.org/features/iq-register"/&gt; &lt;/stream:features&gt;  
+</code></pre>
+</div>
+
+<p>C2:客户端发送 STARTTLS 命令给服务器:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/&gt;
+</code></pre>
+</div>
+
+<p>S3:服务器通知客户端可以继续进行:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;proceed xmlns='urn:ietf:params:xml:ns:xmpp-tls'/&gt;
+</code></pre>
+</div>
+
+<p>C3：TLS 握手成功, 客户端初始化一个新的流给服务器</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;stream:stream to="192.168.1.185" xmlns="jabber:client"
+xmlns:stream="http://etherx.jabber.org/streams" version="1.0"&gt;  
+</code></pre>
+</div>
+
+<p>S4：服务器通知客户端可用的验证机制:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version='1.0' encoding='UTF-8'?&gt;</span>
+<span class="nt">&lt;stream:stream</span> <span class="na">xmlns:stream=</span><span class="s">"http://etherx.jabber.org/streams"</span>
+<span class="na">xmlns=</span><span class="s">"jabber:client"</span> <span class="na">from=</span><span class="s">"192.168.1.185"</span> <span class="na">id=</span><span class="s">"ad6f53e8"</span> <span class="na">xml:lang=</span><span class="s">"en"</span> <span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span> <span class="nt">&lt;stream:features&gt;</span>
+<span class="nt">&lt;mechanisms</span> <span class="na">xmlns=</span><span class="s">"urn:ietf:params:xml:ns:xmpp-sasl"</span><span class="nt">&gt;</span> <span class="nt">&lt;mechanism&gt;</span>DIGEST-MD5<span class="nt">&lt;/mechanism&gt;</span> <span class="nt">&lt;mechanism&gt;</span>PLAIN<span class="nt">&lt;/mechanism&gt;</span>
+<span class="nt">&lt;mechanism&gt;</span>ANONYMOUS<span class="nt">&lt;/mechanism&gt;</span> <span class="nt">&lt;mechanism&gt;</span>CRAM-MD5<span class="nt">&lt;/mechanism&gt;</span> <span class="nt">&lt;/mechanisms&gt;</span>
+<span class="nt">&lt;compression</span> <span class="na">xmlns=</span><span class="s">"http://jabber.org/features/compress"</span><span class="nt">&gt;</span> <span class="nt">&lt;method&gt;</span>zlib<span class="nt">&lt;/method&gt;</span> <span class="nt">&lt;/compression&gt;</span>
+<span class="nt">&lt;auth</span> <span class="na">xmlns=</span><span class="s">"http://jabber.org/features/iq-auth"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;register</span> <span class="na">xmlns=</span><span class="s">"http://jabber.org/features/iq-register"</span><span class="nt">/&gt;</span> <span class="nt">&lt;/stream:features&gt;</span>
+</code></pre>
+</div>
+
+<p>C4: 客户端选择一个验证机制:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;auth mechanism="DIGEST-MD5" xmlns="urn:ietf:params:xml:ns:xmpp-sasl"&gt;&lt;/auth&gt;
+</code></pre>
+</div>
+
+<p>S5:服务器发送一个 [BASE64] 编码的挑战给客户端:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;challenge xmlns="urn:ietf:params:xml:ns:xmpp-sasl"&gt;cmVhbG09IjE5Mi4xNjguMS4xODUiLG5vbmNlPSJlcEJaZlBxU1p0WGlLYzBqdGpwT0I1a01HMHdiY0hsUmNhOE52ZE9SIixxb3A9ImF1dGgiLGNoYXJzZXQ9dXRmLTgsYWxnb3JpdGhtPW1kNS1zZXNz&lt;/challenge&gt;  C5:客户端发送一个[BASE64]编码的回应这个挑战:
+&lt;response xmlns="urn:ietf:params:xml:ns:xmpp-sasl"&gt;Y2hhcnNldD11dGYtOCx1c2VybmFtZT0iYWRtaW4iLHJlYWxtPSIxOTIuMTY4LjEuMTg1Iixub25jZT0iZXBCWmZQcVNadFhpS2MwanRqcE9CNWtNRzB3YmNIbFJjYThOdmRPUiIsbmM9MDAwMDAwMDEsY25vbmNlPSJMNDJ1SE1XK2piemh6N1hzdWRndHN1V1VIT2hNZmFLVUJpcU5iR1p2IixkaWdlc3QtdXJpPSJ4bXBwLzE5Mi4xNjguMS4xODUiLG1heGJ1Zj02NTUzNixyZXNwb25zZT1hN2JhMWZlOThiMDc2ZjUzZWUzNTczM2Q5NDMwODJlYSxxb3A9YXV0aCxhdXRoemlkPSJhZG1pbiI=&lt;/response&gt;
+</code></pre>
+</div>
+
+<p>S6:服务器通知客户端验证成功</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;success xmlns="urn:ietf:params:xml:ns:xmpp-sasl"&gt;cnNwYXV0aD0yNDZlZDcyOTQ3ZjVhYzFiNWQ2ZDc4ZTkxM2QzMmFjMQ==&lt;/success&gt;
+</code></pre>
+</div>
+
+<p>C6客户端初始化一个新流给服务器：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;stream:stream to="192.168.1.185" xmlns="jabber:client"
+xmlns:stream="http://etherx.jabber.org/streams" version="1.0"&gt;
+</code></pre>
+</div>
+
+<p>基本上XMPP的登录细节就已经清楚了。后面我们看一下 注册相关的模块 以及 联系人请求模块的开发。如果想获取源码的话，请转到https://github.com/TerryLMay/TMXMPPClient/tree/master/TMXMPPClient</p>
+
+  </section>
+</article>
+
+<section class="read-more">
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">最近的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/xmpp-contact-query/" title="link to XMPP好友获取与好友关系详解">XMPP好友获取与好友关系详解</a></h2>
+       <p class="excerpt">上篇主要讲解了关于XMPP登录部分，而登录部分 只用到了XMPPStream 连接，认证。而本篇 主要讲解 用户的注册(XMPPStream)、自己上线通知(XMPPPresence)、好友获取(IQ 请求)。用户注册部分用户注册部分也比较简单。首先，我们需要自定义一个用户注册界面，界面的开发 就不在这边详细讲解了，github上面有开源的代码，你们可以去下载。xmpp的注册部分跟登录部分基本流程是相同的，xmpp注册 也需要先连接XMPP 服务器，当连接成功之后，需要调用XMPPStre...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 20:14:16 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">XMPP</span><a class="btn-border-small" href=/2016/02/xmpp-contact-query/>继续阅读</a></div>
+   </div>
+   
+   
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">更早的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/install-openfile-on-mac/" title="link to MAC下Openfire服务器的安装">MAC下Openfire服务器的安装</a></h2>
+       <p class="excerpt">这篇文章将要介绍如何在MAC 下安装Openfire服务器以及如何配置服务器，后续会实现 IOS 客户端 与 服务器端的通信。一、Openfire的安装1.到http://www.igniterealtime.org/downloads/index.jsp 下载最新openfire for mac版2、下载完按照正常mac程序安装即可。3、完成安装之后，进入到设置界面，打开最下面的openfire图标，打开openfire的打开界面。4、在点击start open fire的时候会出现 c...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 19:27:33 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">Openfire</span><a class="btn-border-small" href=/2016/02/install-openfile-on-mac/>继续阅读</a></div>
+   </div>
+   
+</section>
+
+<section class="post-comments">
+  
+    <div id="disqus_thread"></div>
+    <script>
+    
+    var disqus_config = function () {
+        this.page.url = "http://localhost:4000/2016/02/program-ios-xmpp-client/";
+        this.page.identifier = "/2016/02/program-ios-xmpp-client/";
+    };
+
+    var disqus_shortname = 'vno-jekyll';
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
+    
+  
+  
+  
+  
+</section>
+
+
+            <section class="footer">
+    <footer>
+    	<span class="footer__copyright">本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享 署名-非商业性使用-相同方式共享 4.0 国际 许可协议</a></span>
+        <span class="footer__copyright">由 <a href="https://jekyllrb.com">Jekyll</a> 于 2017-06-19 生成，感谢 <a href="https://github.com">Github</a> 为本站提供稳定的代码托管服务</span>
+        <span class="footer__copyright">本站由 <a href="www.terrylmay.com">@terry.king</a> 创建，采用 <a href="https://github.com/onevcat/vno-jekyll">Vno - Jekyll</a> 作为主题，您可以在 GitHub 找到<a href="https://github.com/terryKing1992/terryKing1992.github.io">本站源码</a> - &copy; 2017</span>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+    
+  </body>
+
+</html>

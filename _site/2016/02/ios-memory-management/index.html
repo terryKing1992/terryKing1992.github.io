@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>IOS内存管理</title>
+  <meta name="description" content="前言">
+  <meta name="author" content="Wei Wang">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="IOS内存管理">
+  <meta name="twitter:description" content="前言">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="IOS内存管理">
+  <meta property="og:description" content="前言">
+
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+  <link href="/assets/images/favicon.png" rel="shortcut icon" type="image/png">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2016/02/ios-memory-management/">
+  <link rel="alternate" type="application/rss+xml" title="Terry.King的技术博客" href="http://localhost:4000/feed.xml">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/assets/images/terryking_blog_background.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/#blog" title="前往 Terry.King的技术博客 的主页" class="blog-button"><img src="/assets/images/avatar_icon.jpg" width="80" alt="Terry.King的技术博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for Terry.King的技术博客" class="blog-button">Terry.King的技术博客</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">目前在从事AI领域的研究, 精通iOS开发 与 J2EE开发</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的技术博客，我是Terry.King</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        
+        <p class="panel-cover__description">希望通过本博客记录自己的技术发展历程</p>
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="博客" class="blog-button">博客</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="成长历程">成长</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="简历">简历</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="关于">关于</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="项目">项目</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+
+          <div><nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  
+  <!-- Weibo -->
+  <li class="navigation__item">
+    <a href="http://weibo.com/terrylmay" title="@terrylmay 的微博" target="_blank">
+      <i class='social fa fa-weibo'></i>
+      <span class="label">Weibo</span>
+    </a>
+  </li>
+  
+
+  
+  <!-- Github -->
+  <li class="navigation__item">
+    <a href="https://github.com/terryKing1992" title="@terryKing1992 的 Github" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+  
+  
+  
+  <!-- Twitter -->
+  <li class="navigation__item">
+    <a href="http://twitter.com/terryking" title="@terryking" target="_blank">
+      <i class='social fa fa-twitter'></i>
+      <span class="label">Twitter</span>
+    </a>
+  </li>
+  
+
+  
+
+  <!-- RSS -->
+  <li class="navigation__item">
+    <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+  
+  <!-- Email -->
+  <li class="navigation__item">
+    <a href="mailto:terrylmay@gmail.com" title="Contact me">
+      <i class='social fa fa-envelope'></i>
+      <span class="label">Email</span>
+    </a>
+  </li>
+  
+
+  </ul>
+</nav>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="panel-cover--overlay cover-blue"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2016-02-21 19:04:49 +0800" itemprop="datePublished" class="post-meta__date date">2016-02-21</time> &#8226; <span class="post-meta__tags tags">IOS内存管理属性修饰符</span>
+    </div>
+    <h1 class="post-title">IOS内存管理</h1>
+  </header>
+
+  <section class="post">
+    <h1 id="前言"><strong>前言</strong></h1>
+
+<p>内存管理是计算机编程最为基本的领域之一。在很多脚本语言中，您不必担心内存是如何管理的，这并不能使得内存管理的重要性有一点点降低。对实际编程来说，理解您的内存管理器的能力与局限性至关重要。在大部分系统语言中，比如 C 和C++，您必须进行内存管理。本文将介绍手工的、自动的内存管理实践的基本概念。</p>
+
+<h1 id="一属性修饰符简介"><strong>一、属性修饰符简介</strong></h1>
+
+<p>说到内存管理，不可避免的要提到属性修饰符。在本章中我们只关心跟内存管理相关的修饰符：</p>
+
+<ul>
+  <li>assign: 主要是用来修饰基本数据类型</li>
+  <li>copy:copy 可以用来修饰NSString 或者 对象类型(如果修饰对象类型,那么被修饰的对象一定要实现NSCopying协议)</li>
+  <li>weak: 为了防止循环引用,引入的概念.被weak修饰 引用计数不变</li>
+  <li>retain: MRC中引入的概念,在ARC中也可以使用.但最好用strong</li>
+  <li>strong: 对象的修饰符</li>
+</ul>
+
+<h1 id="二-assign修饰符介绍"><strong>二、 assign修饰符介绍</strong></h1>
+
+<p>assign 用来修饰基本数据类型，比如NSInteger、BOOL、int等数据类型.</p>
+
+<ul>
+  <li><strong>场景一: 直接修饰成员属性,其修饰成员的生命周期随对象的释放而释放</strong></li>
+</ul>
+
+<p>我们创建一个Person类,里面包含了两个属性:isCoder表示是否是程序员，age表示年龄</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="err">```</span><span class="n">Objective</span><span class="o">-</span><span class="n">C</span>
+	<span class="k">@interface</span> <span class="nc">Person</span> <span class="p">:</span> <span class="nc">NSObject</span>
+
+	<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">BOOL</span> <span class="n">isCoder</span><span class="p">;</span>
+	<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">NSInteger</span> <span class="n">age</span><span class="p">;</span>
+
+	<span class="k">@end</span>
+<span class="err">```</span>
+</code></pre>
+</div>
+
+<pre><code class="language-Objective-C">		#import "Person.h"
+
+		@implementation Person
+
+		@end
+		```
+
+我们根据具体的代码示例开始assign之旅
+
+```Objective-C
+		NSInteger age = 24;
+		BOOL isCoder = YES;
+		person.isCoder = isCoder;
+		person.age = age;
+	```
+
+
+这4行代码执行之后,person中的属性值发生了改变.
+
+但是 因为age 与 isCoder并不是对象类型,它们也没有retainCount的属性.所以并不存在引用计数增加的情况.
+
+
+- **场景二：assign修饰**对象类型**会发生什么情况**
+
+我们顺着上面的代码往下走,另外再定义World类.
+
+```Objective-C
+		#import &lt;Foundation/Foundation.h&gt;
+
+		#import "Person.h"
+
+		@interface World : NSObject
+
+		@property (nonatomic, assign) Person *person;
+
+		@end
+</code></pre>
+
+<pre><code class="language-Objective-C">		#import "World.h"
+
+		@implementation World
+
+		@end
+</code></pre>
+
+<p>下面开始看assign修饰对象代码如何来写:</p>
+
+<pre><code class="language-Objective-C">		Person *person = [[Person alloc] init];
+	    person.isCoder = YES;
+	    person.age = 24;
+
+	    World *world = [[World alloc] init];
+	    world.person = person;
+
+	    NSLog(@"此时World类中person属性的值为:%@", world.person);
+</code></pre>
+
+<p>这时候我们可以看到,world.person对象是有值的,那么因为上面声明的person对象还没有释放.</p>
+
+<p>这时候我们使用lldb控制台打印一下world.person.retainCount可以看到一下输出:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>此时World类中person属性的值为:&lt;Person: 0x7fa592e08a80&gt;
+(lldb) po person.retainCount
+**1**
+</code></pre>
+</div>
+
+<p>说明assign修饰的对象,引用计数是不会增加的.为了更好的验证assign修饰的对象,
+在超出赋值运算符右边对象(比如:person对象)生命周期之后就会自动变为nil.我们把world对象改变成成员变量.在AppDelegate承载:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="err">```</span><span class="n">Objective</span><span class="o">-</span><span class="n">C</span>
+	<span class="cp">#import "Person.h"
+</span>	<span class="cp">#import "World.h"
+</span>
+	<span class="k">@interface</span> <span class="nc">AppDelegate</span> <span class="p">()</span>
+	<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">World</span> <span class="o">*</span><span class="n">world</span><span class="p">;</span>
+	<span class="k">@end</span>
+
+	<span class="k">@implementation</span> <span class="nc">AppDelegate</span>
+
+
+	<span class="k">-</span> <span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="nf">application</span><span class="p">:(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions</span><span class="p">:(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span> <span class="p">{</span>
+	    <span class="c1">// Override point for customization after application launch.
+</span>
+	    <span class="n">Person</span> <span class="o">*</span><span class="n">person</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Person</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">init</span><span class="p">];</span>
+	    <span class="n">person</span><span class="p">.</span><span class="n">isCoder</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+	    <span class="n">person</span><span class="p">.</span><span class="n">age</span> <span class="o">=</span> <span class="mi">24</span><span class="p">;</span>
+
+	    <span class="n">self</span><span class="p">.</span><span class="n">world</span> <span class="o">=</span> <span class="p">[[</span><span class="n">World</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">init</span><span class="p">];</span>
+	    <span class="n">self</span><span class="p">.</span><span class="n">world</span><span class="p">.</span><span class="n">person</span> <span class="o">=</span> <span class="n">person</span><span class="p">;</span>
+
+	    <span class="c1">//**当在该didFinishLaunchingWithOptions 还能够访问到person对象,因为person对象还没有出作用域**
+</span>	    <span class="n">NSLog</span><span class="p">(</span><span class="s">@"此时World类中person属性的值为:%@"</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">world</span><span class="p">.</span><span class="n">person</span><span class="p">);</span>
+
+	    <span class="k">return</span> <span class="nb">YES</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">applicationDidBecomeActive</span><span class="p">:(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="p">{</span>
+	    <span class="c1">// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+</span>	    <span class="c1">//**当到该方法的时候,因为已经出了person对象的作用域,这时候在看world.person对象是什么状态**
+</span>	    <span class="n">NSLog</span><span class="p">(</span><span class="s">@"在%s 方法中self.world.person的值为:%@"</span><span class="p">,</span> <span class="n">__func__</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">world</span><span class="p">.</span><span class="n">person</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="k">@end</span>
+<span class="err">```</span>
+</code></pre>
+</div>
+
+<p>当程序进入applicationDidBecomeActive方法的时候,因为person已经出了作用域.所以,引用计数已经变为0.</p>
+
+<p>不过此时的self.world.person还指向了原来person指向的地址.这时候就会出现野指针的情况导致程序崩溃.</p>
+
+<p>代码执行完毕之后，如果在World类的其他方法中调用self.person.age,看一下效果。这时候调用self.person.age 因为self.person 指向的内存地址被其他的对象占用了，造成无法预知的错误。有可能内存没有被其他对象使用，因为内存地址中已经没有任何Person的信息了，造成的错误提示为：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Thread-1:Bad-Exe-Acces
+</code></pre>
+</div>
+
+<p>这时候我们打印堆栈信息可以发现:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>thread #1: tid = 0xb196, 0x0000000105f2cc78 libobjc.A.dylib`realizeClass(objc_class*) + 41, queue = 'com.apple.main-thread', stop reason = EXC_BAD_ACCESS (code=1, address=0x7e8)
+frame #0: 0x0000000105f2cc78 libobjc.A.dylib`realizeClass(objc_class*) + 41
+frame #1: 0x0000000105f2cd59 libobjc.A.dylib`realizeClass(objc_class*) + 266
+frame #2: 0x0000000105f2fcdb libobjc.A.dylib`lookUpImpOrForward + 104
+frame #3: 0x0000000105f3e8bb libobjc.A.dylib`objc_msgSend + 187
+</code></pre>
+</div>
+
+<p>objc调用了消息传递机制,最终还是没能找到响应方法的对象,最后Crash</p>
+
+<p><strong>所以，为了避免不可预知的错误，在修饰对象的时候一定不要使用assign</strong></p>
+
+<hr />
+
+<h1 id="三copy修饰符介绍"><strong>三、copy修饰符介绍</strong></h1>
+
+<h2 id="场景一copy修饰符通常用在nsstring对象上面"><strong>场景一、copy修饰符通常用在NSString对象上面</strong></h2>
+
+<p>我们在上面Person类的基础上增加一个name的属性</p>
+
+<pre><code class="language-Objective-C">		#import &lt;Foundation/Foundation.h&gt;
+
+		@interface Person : NSObject
+
+		@property (nonatomic, assign) BOOL isCoder;
+		@property (nonatomic, assign) NSInteger age;
+		@property (nonatomic, copy) NSString *name;
+
+		@end
+</code></pre>
+
+<pre><code class="language-Objective-C">		 NSString *name = @"terry";
+
+	    Person *person = [[Person alloc] init];
+	    person.isCoder = YES;
+	    person.age = 24;
+	    person.name = name;
+
+	    NSLog(@"person.name == name 结果为:%d", person.name == name);
+</code></pre>
+
+<p>大家应该能够猜到结果了</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>person.name == name 结果为:1
+</code></pre>
+</div>
+
+<p>大家都知道 == 用来比较内存地址,这个结果表明 copy修饰 NSString的话,实际上与strong 修饰NSString 效果是一样的.</p>
+
+<h2 id="场景二当然也可以用在自定义对象以及foundation框架中的其他对象上面下面我们通过代码的形式解读copy修饰其他对象"><strong>场景二、当然也可以用在自定义对象以及Foundation框架中的其他对象上面,下面我们通过代码的形式解读copy修饰其他对象</strong></h2>
+
+<p>上面也提到过,如果想使用copy修饰符来修饰自定义对象的话,自定义对象一定要实现NSCopying协议才可以.</p>
+
+<p>不实现的话,当为world.person赋值的时候会crash</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>-[Person copyWithZone:]: unrecognized selector sent to instance 0x7f93b8d18ad0
+2016-05-16 23:30:51.540 MicroTalk[7351:56161] *** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '-[Person copyWithZone:]: unrecognized selector sent to instance 0x7f93b8d18ad0'
+*** First throw call stack:
+(
+	0   CoreFoundation                      0x0000000105b66e65 __exceptionPreprocess + 165
+	1   libobjc.A.dylib                     0x00000001052dddeb objc_exception_throw + 48
+	2   CoreFoundation                      0x0000000105b6f48d -[NSObject(NSObject) doesNotRecognizeSelector:] + 205
+	3   CoreFoundation                      0x0000000105abc90a ___forwarding___ + 970
+	4   CoreFoundation                      0x0000000105abc4b8 _CF_forwarding_prep_0 + 120
+	5   libobjc.A.dylib                     0x00000001052ebb93 objc_setProperty_nonatomic_copy + 39
+	6   MicroTalk                           0x0000000101ca18c7 -[World setPerson:] +
+</code></pre>
+</div>
+
+<p>我们把World类中的assign修饰符改为copy</p>
+
+<pre><code class="language-Objective-C">		 #import "Person.h"
+
+		@interface World : NSObject
+
+		@property (nonatomic, copy) Person *person;
+
+		@end
+</code></pre>
+
+<pre><code class="language-Objective-C">		@interface Person : NSObject&lt;NSCopying&gt;
+
+		@property (nonatomic, assign) BOOL isCoder;
+		@property (nonatomic, assign) NSInteger age;
+		@property (nonatomic, copy) NSString *name;
+
+		@end
+
+		@implementation Person
+
+		- (instancetype)copyWithZone:(NSZone *)zone {
+		    return self;
+		}
+		@end
+</code></pre>
+
+<pre><code class="language-Objective-C">		NSString *name = @"terry";
+
+	    Person *person = [[Person alloc] init];
+	    person.isCoder = YES;
+	    person.age = 24;
+	    person.name = name;
+
+	    self.world = [[World alloc] init];
+
+	    self.world.person = person;
+        NSLog(@"self.world.person == person 结果为:%d", self.world.person == person);
+</code></pre>
+
+<p>打印结果为:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>self.world.person == person 结果为:1
+</code></pre>
+</div>
+
+<p>如果Person中的copyWithZone 是上面这种实现，这时候，你就会发现self.person的引用计数目前已经是2了。</p>
+
+<p>因为Person的copy方法返回的还是自己。如果这种代码出现在MRC中的话，就会造成内存泄露。在MRC中，给self.person的正确赋值方式应嘎是下面的情况</p>
+
+<pre><code class="language-Objective-C">		 self.person = [[[Person alloc] init] autorelease];`
+</code></pre>
+
+<p>这样在代码段结束之后，即AutoReleasing代码块结束之后，就会释放，将self.person指向的对象的引用计数-1，从而达到内存管理，避免内存泄露的问题。当然，MRC中的代码也可以这样写</p>
+
+<pre><code class="language-Objective-C">		Person *person = [[Person alloc] init]; self.person = person; [person release];
+</code></pre>
+
+<p>与上面这段MRC的代码对应的ARC的代码应该是</p>
+
+<pre><code class="language-Objective-C">		Person *person = [[Person alloc] init];    self.person = person;
+</code></pre>
+
+<p>其实通过上面的ARC 与 MRC的代码对比我们也可以看到，LLVM将ARC代码转化成MRC代码的实现原理，使得开发者不需要关心内存管理的问题。</p>
+
+<p>如果此时,Person类的copyWithZone 不返回自己的话,我们看一下如何实现深复制的功能</p>
+
+<pre><code class="language-Objective-C">		@interface Person : NSObject&lt;NSCopying&gt;
+
+		@property (nonatomic, assign) BOOL isCoder;
+		@property (nonatomic, assign) NSInteger age;
+		@property (nonatomic, copy) NSString *name;
+
+		@end
+
+		@implementation Person
+
+		- (instancetype)copyWithZone:(NSZone *)zone {
+		    Person *person = [[Person alloc] init];
+		    person.isCoder = self.isCoder;
+		    person.age = self.age;
+		    person.name = self.name;
+
+		    return person;
+		}
+		@end
+</code></pre>
+
+<p>如果Person实现了深复制的功能的话,那么上面的测试用例打印出来的就不相同了.同时引用计数也不会增加,而是两个Person对象的引用计数分别都为 <strong>1</strong>.</p>
+
+<p>注:如果要实现一个对象的深复制的话,那么对象的修饰符一定要是copy才可以.如果copyWitZone返回self,那么与strong修饰符作用完全一样.</p>
+
+<h1 id="四weak-属性修饰符简介">四、weak 属性修饰符简介</h1>
+
+<p>紧跟着上面的实现,我们在World中有Person的引用，在Person中也增加一个World的引用，来表示这个人属于哪个世界，如果这两个对象都是用strong修饰，则会存在内存泄露的情况,</p>
+
+<p>如果这两个copyWithZone对象存在浅复制的情况则会造成内存泄露。用代码验证一下：</p>
+
+<p>```Objective-C
+		@interface Person : NSObject<NSCopying></NSCopying></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>	<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">BOOL</span> <span class="n">isCoder</span><span class="p">;</span>
+	<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">NSInteger</span> <span class="n">age</span><span class="p">;</span>
+	<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">copy</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+	<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">World</span> <span class="o">*</span><span class="n">world</span><span class="p">;</span>
+
+	<span class="k">@end</span>
+
+	<span class="k">@implementation</span> <span class="nc">Person</span>
+
+	<span class="k">-</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">copyWithZone</span><span class="p">:(</span><span class="n">NSZone</span> <span class="o">*</span><span class="p">)</span><span class="nv">zone</span> <span class="p">{</span>
+	    <span class="n">Person</span> <span class="o">*</span><span class="n">person</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Person</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">init</span><span class="p">];</span>
+	    <span class="n">person</span><span class="p">.</span><span class="n">isCoder</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">isCoder</span><span class="p">;</span>
+	    <span class="n">person</span><span class="p">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">age</span><span class="p">;</span>
+	    <span class="n">person</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">name</span><span class="p">;</span>
+
+	    <span class="k">return</span> <span class="n">person</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">@end</span>
+<span class="err">```</span>
+</code></pre>
+</div>
+
+<p>```Objective-C
+		//测试代码
+		world = [[World alloc] init];
+		person = [[Person alloc] init];
+		person.name = @”terry”;</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>	world.person =person;
+	person.world = world;
+```
+</code></pre>
+</div>
+
+<p>上面代码中world引用了person,而person 同样引用了 world,当world调用release的时候,因为person还有引用,所以不会dealoc,而person也是同样的道理,这样就形成了强强引用的关系，造成内存泄露。所以，为了解决这种问题，IOS 中引入了weak的概念。</p>
+
+<p>weak主要是用来解决两个对象之间相互引用造成的两个对象的内存无法释放的问题。</p>
+
+<p>将Person中的world修饰符改为weak,即可解决问题循环引用的情况.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="err">```</span><span class="n">Objective</span><span class="o">-</span><span class="n">C</span>
+	<span class="k">@interface</span> <span class="nc">Person</span> <span class="p">:</span> <span class="nc">NSObject</span><span class="o">&lt;</span><span class="n">NSCopying</span><span class="o">&gt;</span>
+
+	<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">BOOL</span> <span class="n">isCoder</span><span class="p">;</span>
+	<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">NSInteger</span> <span class="n">age</span><span class="p">;</span>
+	<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">copy</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+	<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">weak</span><span class="p">)</span> <span class="n">World</span> <span class="o">*</span><span class="n">world</span><span class="p">;</span>
+
+	<span class="k">@end</span>
+
+	<span class="k">@implementation</span> <span class="nc">Person</span>
+
+	<span class="k">-</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">copyWithZone</span><span class="p">:(</span><span class="n">NSZone</span> <span class="o">*</span><span class="p">)</span><span class="nv">zone</span> <span class="p">{</span>
+	    <span class="n">Person</span> <span class="o">*</span><span class="n">person</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Person</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">init</span><span class="p">];</span>
+	    <span class="n">person</span><span class="p">.</span><span class="n">isCoder</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">isCoder</span><span class="p">;</span>
+	    <span class="n">person</span><span class="p">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">age</span><span class="p">;</span>
+	    <span class="n">person</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">name</span><span class="p">;</span>
+
+	    <span class="k">return</span> <span class="n">person</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">@end</span>
+<span class="err">```</span>
+</code></pre>
+</div>
+
+<p>那么，使用如下测试代码：</p>
+
+<p>```Objective-C
+		world = [[World alloc] init];
+		person = [[Person alloc] init];
+		person.name = @”terry”;</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>	world.person =person;
+	person.world = world;
+```
+</code></pre>
+</div>
+
+<p>代码执行完毕之后，person引用计数为2，world的引用计数为1(world自己还活着呢,1 就是表示的自己).</p>
+
+<p>所以，当world释放的时候,person引用计数就会<strong>减1</strong>.当person对象释放的时候,发现就自己有对那块内存的引用,自然-1之后</p>
+
+<p>引用计数变为0,执行dealloc方法,内存全部释放.</p>
+
+<p>而这时候strong修饰符的使用也就没什么好说的了，被strong 修饰的对象，引用计数+1.</p>
+
+<h1 id="五在写博客过程中发现的问题"><strong>五、在写博客过程中发现的问题</strong></h1>
+
+<h2 id="类函数与成员函数的区别">类函数与成员函数的区别</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>第一点：写法不同，这种很明显的区别显而易见。
+第二点：内存管理方面的区别,比如
+</code></pre>
+</div>
+
+<p><code class="highlighter-rouge">Objective-C
+		NSArray*array = [NSArray array];
+		NSArray *array = [[NSArray alloc] init];
+	</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>记得前面也有提到过MRC 与ARC的转换，下面看这段代码就了解了类函数 与 成员函数的区别了。
+
+在MRC中需要这么写如下代码，否者会造成内存泄露
+</code></pre>
+</div>
+
+<p><code class="highlighter-rouge">Objective-C
+		NSArray *array = [[[NSArray alloc] init] autoreleasing];
+		//也可以这样写：
+		NSArray *array = [[NSArray alloc] init];
+		/*其他代码*/
+		[array release];
+		//但是如果使用Foundation中的类方法创建对象的话，则不需要上面那样写
+		NSArray *array = [NSArray array];
+	</code></p>
+
+<p>这就是两者之间的区别。自己细细的领悟哦。</p>
+
+<h1 id="后序"><strong>后序</strong></h1>
+
+<p>记录一下关于内存管理的自己的一些认知，如果有什么不对的，欢迎批评指正，大家共同进步。后续也会增加对于IOS 各方面的研究博客。欢迎 关注。</p>
+
+  </section>
+</article>
+
+<section class="read-more">
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">最近的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/gcd-api/" title="link to GCD API详解">GCD API详解</a></h2>
+       <p class="excerpt">前言:GCD API 详解GCD 在IOS 多线程编程中起着举足轻重的作用；GCD相对来说是更加抽象化的API，但是它比较靠近底层一些，都是使用C语言来实现的。下面我们一起走进GCD的世界，探索它里面的奥秘；一、Dispatch Queue从名字(分发队列)我们就可以看出，这个是任务都会进入到这个队列中等待处理。开发者是需要把要执行的任务添加到该队列中即可。```Objective-Cdispatch_async(dispatch_get_main_queue(), ^{    NSLog...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 19:11:21 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">GCD多线程</span><a class="btn-border-small" href=/2016/02/gcd-api/>继续阅读</a></div>
+   </div>
+   
+   
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">更早的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/linear-table-using-array/" title="link to 线性表的数组实现">线性表的数组实现</a></h2>
+       <p class="excerpt">线性表数组实现代码线性表 的数组实现:线性表中应该有的功能包括增加删除查找以及修改的操作以及对象的初始化，自增操作以及返回线性表的数据元素的个数package com.neusoft.linearlist;import java.util.Arrays;public class ArrayList&lt;T&gt; {	//线性表的容量	private int capacity;	// 线性表中元素的个数	private int size;	// 存储数据的数组	private Objec...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 18:54:00 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags"></span><a class="btn-border-small" href=/2016/02/linear-table-using-array/>继续阅读</a></div>
+   </div>
+   
+</section>
+
+<section class="post-comments">
+  
+    <div id="disqus_thread"></div>
+    <script>
+    
+    var disqus_config = function () {
+        this.page.url = "http://localhost:4000/2016/02/ios-memory-management/";
+        this.page.identifier = "/2016/02/ios-memory-management/";
+    };
+
+    var disqus_shortname = 'vno-jekyll';
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
+    
+  
+  
+  
+  
+</section>
+
+
+            <section class="footer">
+    <footer>
+    	<span class="footer__copyright">本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享 署名-非商业性使用-相同方式共享 4.0 国际 许可协议</a></span>
+        <span class="footer__copyright">由 <a href="https://jekyllrb.com">Jekyll</a> 于 2017-06-19 生成，感谢 <a href="https://github.com">Github</a> 为本站提供稳定的代码托管服务</span>
+        <span class="footer__copyright">本站由 <a href="www.terrylmay.com">@terry.king</a> 创建，采用 <a href="https://github.com/onevcat/vno-jekyll">Vno - Jekyll</a> 作为主题，您可以在 GitHub 找到<a href="https://github.com/terryKing1992/terryKing1992.github.io">本站源码</a> - &copy; 2017</span>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+    
+  </body>
+
+</html>

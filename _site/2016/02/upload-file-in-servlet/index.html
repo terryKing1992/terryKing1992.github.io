@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>Servlet文件上传实现</title>
+  <meta name="description" content="由于最近看到有人论坛上发帖称自己用了网上的某个框架,因为是在裸机上面开发的,并没有检测到病毒,等用其他机器演示的时候整个项目出现了病毒，并且客户直接否认了这个项目，突然让我想到了学长说的一句话：工具类我一般自己写，谁知道他们写成什么样子给你用呢。又鉴于文件上传功能比较常见，而且大部分人都还在使用像SmartUpl...">
+  <meta name="author" content="Wei Wang">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Servlet文件上传实现">
+  <meta name="twitter:description" content="由于最近看到有人论坛上发帖称自己用了网上的某个框架,因为是在裸机上面开发的,并没有检测到病毒,等用其他机器演示的时候整个项目出现了病毒，并且客户直接否认了这个项目，突然让我想到了学长说的一句话：工具类我一般自己写，谁知道他们写成什么样子给你用呢。又鉴于文件上传功能比较常见，而且大部分人都还在使用像SmartUpl...">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Servlet文件上传实现">
+  <meta property="og:description" content="由于最近看到有人论坛上发帖称自己用了网上的某个框架,因为是在裸机上面开发的,并没有检测到病毒,等用其他机器演示的时候整个项目出现了病毒，并且客户直接否认了这个项目，突然让我想到了学长说的一句话：工具类我一般自己写，谁知道他们写成什么样子给你用呢。又鉴于文件上传功能比较常见，而且大部分人都还在使用像SmartUpl...">
+
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+  <link href="/assets/images/favicon.png" rel="shortcut icon" type="image/png">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2016/02/upload-file-in-servlet/">
+  <link rel="alternate" type="application/rss+xml" title="Terry.King的技术博客" href="http://localhost:4000/feed.xml">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/assets/images/terryking_blog_background.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/#blog" title="前往 Terry.King的技术博客 的主页" class="blog-button"><img src="/assets/images/avatar_icon.jpg" width="80" alt="Terry.King的技术博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for Terry.King的技术博客" class="blog-button">Terry.King的技术博客</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">目前在从事AI领域的研究, 精通iOS开发 与 J2EE开发</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的技术博客，我是Terry.King</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        
+        <p class="panel-cover__description">希望通过本博客记录自己的技术发展历程</p>
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="博客" class="blog-button">博客</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="成长历程">成长</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="简历">简历</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="关于">关于</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="项目">项目</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+
+          <div><nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  
+  <!-- Weibo -->
+  <li class="navigation__item">
+    <a href="http://weibo.com/terrylmay" title="@terrylmay 的微博" target="_blank">
+      <i class='social fa fa-weibo'></i>
+      <span class="label">Weibo</span>
+    </a>
+  </li>
+  
+
+  
+  <!-- Github -->
+  <li class="navigation__item">
+    <a href="https://github.com/terryKing1992" title="@terryKing1992 的 Github" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+  
+  
+  
+  <!-- Twitter -->
+  <li class="navigation__item">
+    <a href="http://twitter.com/terryking" title="@terryking" target="_blank">
+      <i class='social fa fa-twitter'></i>
+      <span class="label">Twitter</span>
+    </a>
+  </li>
+  
+
+  
+
+  <!-- RSS -->
+  <li class="navigation__item">
+    <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+  
+  <!-- Email -->
+  <li class="navigation__item">
+    <a href="mailto:terrylmay@gmail.com" title="Contact me">
+      <i class='social fa fa-envelope'></i>
+      <span class="label">Email</span>
+    </a>
+  </li>
+  
+
+  </ul>
+</nav>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="panel-cover--overlay cover-blue"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2016-02-21 18:32:53 +0800" itemprop="datePublished" class="post-meta__date date">2016-02-21</time> &#8226; <span class="post-meta__tags tags">Servlet</span>
+    </div>
+    <h1 class="post-title">Servlet文件上传实现</h1>
+  </header>
+
+  <section class="post">
+    <p>由于最近看到有人论坛上发帖称自己用了网上的某个框架,因为是在裸机上面开发的,并没有检测到病毒,等用其他机器演示的时候整个项目出现了病毒，并且客户直接否认了这个项目，突然让我想到了学长说的一句话：工具类我一般自己写，谁知道他们写成什么样子给你用呢。又鉴于文件上传功能比较常见，而且大部分人都还在使用像SmartUpload等组件.而我实在是不想使用这类工具了，所以打算自己动手写一个文件上传的实现</p>
+
+<!-- more -->
+
+<p>2.实现思路</p>
+
+<p>首先，通过分析表单提交的内容到底包含一些什么内容,然后逐步解析，从而得到自己想要的文件信息,最后通过流的形式写入服务器硬盘中.</p>
+
+<p>3.功能实现</p>
+
+<p>首先，使用IDE自动生成一个web工程，在web工程中创建servlet命名为:UploadServlet,并且在web.xml中映射成/UploadServlet;并且在index.jsp页面中加入Form表单如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;form action="UploadServlet" method="post"  
+        enctype="multipart/form-data"&gt;  
+        用户名:  
+        &lt;input type="text" name="username"&gt;  
+        &lt;br&gt;  
+        密码:  
+        &lt;input type="text" name="password"&gt;  
+        &lt;br&gt;  
+        上传文件  
+        &lt;input type="file" name="file"&gt;  
+        &lt;br&gt;  
+        &lt;input type="submit" value="Submit"&gt;  
+&lt;/form&gt;  
+</code></pre>
+</div>
+
+<p>而UploadServlet中的post方法中加入下列代码：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>response.setContentType("text/html");  
+response.setCharacterEncoding("UTF-8");  
+request.setCharacterEncoding("UTF-8");  
+PrintWriter out = response.getWriter();  
+BufferedReader bufferReader = new BufferedReader(new InputStreamReader(  
+        request.getInputStream()));  
+String line = "";  
+while ((line = bufferReader.readLine()) != null) {  
+    System.out.println(line);  
+}
+</code></pre>
+</div>
+
+<p>然后通过打印出request流中的信息如下：
+	——WebKitFormBoundarysmYDzdkAUIGlvggB<br />
+	Content-Disposition: form-data; name=”username”</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>1540547545@qq.com  
+------WebKitFormBoundarysmYDzdkAUIGlvggB  
+Content-Disposition: form-data; name="password"  
+
+terrylmay  
+------WebKitFormBoundarysmYDzdkAUIGlvggB  
+Content-Disposition: form-data; name="file"; filename="SoftwareCache.java"  
+Content-Type: application/octet-stream  
+
+package com.redmoon.forum.plugin.errorquery;  
+public class SoftwareCache extends ObjectCache {  
+    public String putSoftwareInfo(String type, int id) throws CacheException {  
+        SoftwareDao softwareDao = new SoftwareDao();  
+        result = softwareDao.getDescriptionByID(id, type);  
+        rmCache.putInGroup(group + id + "_" + type, group, result);  
+        System.out.println("返回的是从数据库中取出的数据");  
+        return result;  
+    }  
+}  
+
+------WebKitFormBoundarysmYDzdkAUIGlvggB--  
+</code></pre>
+</div>
+
+<p>可以看到如果Form表单中使用了enctype=”multipart/form-data”定义的表单当提交表单时表单字段信息以及文件信息放入到request的流中进行提交。所以如果想要获取到上传文件的内容只能通过解析流的方式拿到。而通过request.getHeader这种方法拿到的只能是图中的Header里面的信息
+并且是拿不到Request Payload中的某个字段的信息的.后面就是最蛋疼的事了.恐怕解析起来要花好长时间，当然强力解析肯定是不行的.毕竟要找出规律才有重用性</p>
+
+<p>通过一天的学习，研究终于写出了一个文本文件，图片文件以及其他文件都能够上传的通用类,并且能够支持多文件上传.只要界面中能够进行多选的话，不说废话了.核心代码如下</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>while (i != -1) {  
+        // 拿到该行数据  
+        String line = new String(buff, 0, i);  
+        if (line.startsWith("Content-Disposition:")) {  
+            // 如果不是文件域，那么肯定是表单字段域了  
+            if (!line.contains("filename")) {  
+                int index = line.indexOf("name=");  
+                String name = "";  
+                if (index != -1) {  
+                    name = line.substring(index + 6, line.length() - 3);  
+                    System.out.println(name);  
+                }  
+                // 找到字段域中的值  
+                in.readLine(buff, 0, 1024);  
+                i = in.readLine(buff, 0, 1024);  
+                String value = new String(buff, 0, i);  
+                // 放入到fileds中.到时候查找的时候也方便查找  
+                fields.put(name, value);  
+                System.out.println("(" + name + "," + value + ")");  
+            } else if (line.contains("filename")) {  
+                int index = line.indexOf("filename=");  
+                // 通过内容格式找到文件名称  
+                setFileName(line);  
+                System.out.println(this.fileName);  
+                // 连续读取2行，取出无用信息  
+                in.readLine(buff, 0, 1024);
+                in.readLine(buff, 0, 1024);  
+                // 读取文件的内容  
+                i = in.readLine(buff, 0, 1024);  
+                line = new String(buff, 0, i, "ISO8859_1");  
+                FileOutputStream out = new FileOutputStream(new File(  
+                        saveFilePath, fileName));  
+                while (i != -1 &amp;&amp; !line.startsWith(this.boundary)) {  
+                    i = in.readLine(buff, 0, 1024);  
+                    if (new String(buff, 0, i).startsWith(boundary)) {  
+                        out.write(line.substring(0, line.length() - 2)  
+                                .getBytes("ISO8859_1"));  
+                        break;  
+                    } else  
+                        out.write(line.getBytes("ISO8859_1"));  
+                    line = new String(buff, 0, i, "ISO8859_1");  
+                }  
+            }  
+    }  
+    i = in.readLine(buff, 0, 1024);
+}
+</code></pre>
+</div>
+
+<p>首先根据图中的头文件信息格式，来判断如果包含有filename信息的,则直接对后面的信息进行存储，如果不包含filename信息的，直接对其进行解析，然后把解析出来的字段以及他的value放入到map中.方便读取.</p>
+
+  </section>
+</article>
+
+<section class="read-more">
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">最近的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/imp-str-contains/" title="link to 字符串包含实现">字符串包含实现</a></h2>
+       <p class="excerpt">Hello World中是否包含这样的字符串HelloWd,一般会使用多次循环来遍历判断是否存在某个字符.下面我通过使用正则表达式的思想来实现这个功能public static void main(String args[]) {      String stringStr = "CDMter";      String key = "CaseDoesMatter";      judgeSequence(stringStr, key);  }  public static void ju...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 18:35:05 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">字符串</span><a class="btn-border-small" href=/2016/02/imp-str-contains/>继续阅读</a></div>
+   </div>
+   
+   
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">更早的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/Vector/" title="link to Java中Vector类源码学习">Java中Vector类源码学习</a></h2>
+       <p class="excerpt">一、学习目的由于最近在项目中发现，一个项目中用到的java中最多也是最重要的知识基本上就是集合类的使用和多线程的开发，而集合类基本都会使用像List、ArrayList或者HashMa，有些场景可能会用到HashTable或者HashSet等集合。总的来说，java中的对于集合的操作给我们编程带来了很大的便利，但是作为一名合格的程序员，我觉得不仅要会使用，而且应该知道实现细节。同时阅读技术牛人写出来的代码对于自己的开发水平也会有很大的帮助。二、学习目标了解Vector的继承关系以及其内部实...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 18:27:04 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">Vector容器</span><a class="btn-border-small" href=/2016/02/Vector/>继续阅读</a></div>
+   </div>
+   
+</section>
+
+<section class="post-comments">
+  
+    <div id="disqus_thread"></div>
+    <script>
+    
+    var disqus_config = function () {
+        this.page.url = "http://localhost:4000/2016/02/upload-file-in-servlet/";
+        this.page.identifier = "/2016/02/upload-file-in-servlet/";
+    };
+
+    var disqus_shortname = 'vno-jekyll';
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
+    
+  
+  
+  
+  
+</section>
+
+
+            <section class="footer">
+    <footer>
+    	<span class="footer__copyright">本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享 署名-非商业性使用-相同方式共享 4.0 国际 许可协议</a></span>
+        <span class="footer__copyright">由 <a href="https://jekyllrb.com">Jekyll</a> 于 2017-06-19 生成，感谢 <a href="https://github.com">Github</a> 为本站提供稳定的代码托管服务</span>
+        <span class="footer__copyright">本站由 <a href="www.terrylmay.com">@terry.king</a> 创建，采用 <a href="https://github.com/onevcat/vno-jekyll">Vno - Jekyll</a> 作为主题，您可以在 GitHub 找到<a href="https://github.com/terryKing1992/terryKing1992.github.io">本站源码</a> - &copy; 2017</span>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+    
+  </body>
+
+</html>

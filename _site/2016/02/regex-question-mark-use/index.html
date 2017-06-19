@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>正则表达式中问号的用法</title>
+  <meta name="description" content="由于最近工作需要，要从网页链接中找到网页中有用的博客内容，大家都知道，基本使用正则表达式来匹配是最简单的一种做法，而一般都是div中有div，怎么才能匹配到那些内容的div而不是一直匹配到最后面的div呢?可能这样表述不是很清楚，下面看一下代码就知道怎么回事了">
+  <meta name="author" content="Wei Wang">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="正则表达式中问号的用法">
+  <meta name="twitter:description" content="由于最近工作需要，要从网页链接中找到网页中有用的博客内容，大家都知道，基本使用正则表达式来匹配是最简单的一种做法，而一般都是div中有div，怎么才能匹配到那些内容的div而不是一直匹配到最后面的div呢?可能这样表述不是很清楚，下面看一下代码就知道怎么回事了">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="正则表达式中问号的用法">
+  <meta property="og:description" content="由于最近工作需要，要从网页链接中找到网页中有用的博客内容，大家都知道，基本使用正则表达式来匹配是最简单的一种做法，而一般都是div中有div，怎么才能匹配到那些内容的div而不是一直匹配到最后面的div呢?可能这样表述不是很清楚，下面看一下代码就知道怎么回事了">
+
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+  <link href="/assets/images/favicon.png" rel="shortcut icon" type="image/png">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2016/02/regex-question-mark-use/">
+  <link rel="alternate" type="application/rss+xml" title="Terry.King的技术博客" href="http://localhost:4000/feed.xml">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/assets/images/terryking_blog_background.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/#blog" title="前往 Terry.King的技术博客 的主页" class="blog-button"><img src="/assets/images/avatar_icon.jpg" width="80" alt="Terry.King的技术博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for Terry.King的技术博客" class="blog-button">Terry.King的技术博客</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">目前在从事AI领域的研究, 精通iOS开发 与 J2EE开发</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的技术博客，我是Terry.King</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        
+        <p class="panel-cover__description">希望通过本博客记录自己的技术发展历程</p>
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="博客" class="blog-button">博客</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="成长历程">成长</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="简历">简历</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="关于">关于</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="项目">项目</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+
+          <div><nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  
+  <!-- Weibo -->
+  <li class="navigation__item">
+    <a href="http://weibo.com/terrylmay" title="@terrylmay 的微博" target="_blank">
+      <i class='social fa fa-weibo'></i>
+      <span class="label">Weibo</span>
+    </a>
+  </li>
+  
+
+  
+  <!-- Github -->
+  <li class="navigation__item">
+    <a href="https://github.com/terryKing1992" title="@terryKing1992 的 Github" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+  
+  
+  
+  <!-- Twitter -->
+  <li class="navigation__item">
+    <a href="http://twitter.com/terryking" title="@terryking" target="_blank">
+      <i class='social fa fa-twitter'></i>
+      <span class="label">Twitter</span>
+    </a>
+  </li>
+  
+
+  
+
+  <!-- RSS -->
+  <li class="navigation__item">
+    <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+  
+  <!-- Email -->
+  <li class="navigation__item">
+    <a href="mailto:terrylmay@gmail.com" title="Contact me">
+      <i class='social fa fa-envelope'></i>
+      <span class="label">Email</span>
+    </a>
+  </li>
+  
+
+  </ul>
+</nav>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="panel-cover--overlay cover-blue"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2016-02-21 18:18:50 +0800" itemprop="datePublished" class="post-meta__date date">2016-02-21</time> &#8226; <span class="post-meta__tags tags">正则表达式</span>
+    </div>
+    <h1 class="post-title">正则表达式中问号的用法</h1>
+  </header>
+
+  <section class="post">
+    <p>由于最近工作需要，要从网页链接中找到网页中有用的博客内容，大家都知道，基本使用正则表达式来匹配是最简单的一种做法，而一般都是div中有div，怎么才能匹配到那些内容的div而不是一直匹配到最后面的div呢?可能这样表述不是很清楚，下面看一下代码就知道怎么回事了</p>
+
+<p>2、具体描述</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;div id="article_details" class="details"&gt;  
+    &lt;div id="article_content" class="article_content"&gt;  
+        错误：1488 SQLSTATE: HY000 (ER_REORG_PARTITION_NOT_EXIST) 消息：重组的分区数超过了已有的分区数。  
+    &lt;/div&gt;  
+&lt;/div&gt;  
+</code></pre>
+</div>
+
+<p>怎么才能匹配到中间的div配对标签呢?经查询资料发现，在java中如果使用来匹配的话，有一种贪婪匹配原则，就是如果你使用这个正则表达式来匹配的话
+.那么肯定会匹配到最后面那个才会结束，代码如下</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public static void main(String[] args) {  
+    // TODO Auto-generated method stub  
+    // 创建包  
+    String str = "&lt;div id=\"article_details\" class=\"details\"&gt;&lt;div id=\"article_content\" class=\"article_content\"&gt;错误：1488 SQLSTATE: HY000 (ER_REORG_PARTITION_NOT_EXIST) 消息：重组的分区数超过了已有的分区数。&lt;/div&gt;&lt;/div&gt;";  
+    String regex = "&lt;div id=\"article_content\" class=\"article_content\"&gt;.*&lt;/div&gt;";  
+    Pattern pattern = Pattern.compile(regex);  
+    Matcher mch = pattern.matcher(str);  
+    while (mch.find()) {  
+        System.out.println(mch.group());  
+    }  
+}
+</code></pre>
+</div>
+
+<p>运行结果可以看到</p>
+
+<p>从上图可以看到匹配到了最后面一个这种就是贪婪匹配，而如果想要表达式不匹配最后面的那个div，那么？就派上用场了。
+将上面代码中的正则表达式变为</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>String regex = "&lt;div id=\"article_content\" class=\"article_content\"&gt;(.*?)&lt;/div&gt;";  
+</code></pre>
+</div>
+
+<p>然后再运行可以看到，通过非贪婪表达式已经完美解决了我所遇到的问题.</p>
+
+<p>通常的非贪婪表达式有以下几种格式：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>*? 重复任意次，但尽可能少重复
++? 重复1次或更多次，但尽可能少重复
+?? 重复0次或1次，但尽可能少重复
+{n,m}? 重复n到m次，但尽可能少重复
+{n,}? 重复n次以上，但尽可能少重复
+</code></pre>
+</div>
+
+<p>以后在项目中应该还会用到，在这里先记录一下</p>
+
+  </section>
+</article>
+
+<section class="read-more">
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">最近的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/ArrayList/" title="link to Java中ArrayList类源码学习">Java中ArrayList类源码学习</a></h2>
+       <p class="excerpt">相信大家对ArrayList都是比较熟悉的.ArrayList也是在软件开发中经常使用到的一个集合，相对于Vector集合来说，ArrayList的每一个方法少了一个修饰符那就是synchronized，也就意味着该集合类不是线程安全的.而Vector类是线程安全的.但有一点没有想通的是人们更加倾向于使用ArrayList，并且在线程中使用锁机制实现同步，也不使用Vector类来实现同步；好了废话不多说了.下面进入ArrayList的学习首先，打开java.util包下面的ArrayLis...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 18:22:02 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">ArrayList容器</span><a class="btn-border-small" href=/2016/02/ArrayList/>继续阅读</a></div>
+   </div>
+   
+   
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">更早的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/Buffer/" title="link to Java中Buffer类源码学习">Java中Buffer类源码学习</a></h2>
+       <p class="excerpt">FileChannel类中直接通信的就是Buffer,Buffer是通道和文件之间的桥梁.大概数据交互是这样的，FileChannel可以写数据到buffer中，同时另外一个输出FileChannel也可以从buffer中读取数据。buffer中有两种模式：读模式和写模式，读模式会从position位置开始读取到limit字节；写模式同样也会从position写到limit，但是写模式中一般limit=capacity(buffer的大小)Buffer 中有四个变量来标示一些位置：// I...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 18:11:37 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">Buffer缓冲</span><a class="btn-border-small" href=/2016/02/Buffer/>继续阅读</a></div>
+   </div>
+   
+</section>
+
+<section class="post-comments">
+  
+    <div id="disqus_thread"></div>
+    <script>
+    
+    var disqus_config = function () {
+        this.page.url = "http://localhost:4000/2016/02/regex-question-mark-use/";
+        this.page.identifier = "/2016/02/regex-question-mark-use/";
+    };
+
+    var disqus_shortname = 'vno-jekyll';
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
+    
+  
+  
+  
+  
+</section>
+
+
+            <section class="footer">
+    <footer>
+    	<span class="footer__copyright">本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享 署名-非商业性使用-相同方式共享 4.0 国际 许可协议</a></span>
+        <span class="footer__copyright">由 <a href="https://jekyllrb.com">Jekyll</a> 于 2017-06-19 生成，感谢 <a href="https://github.com">Github</a> 为本站提供稳定的代码托管服务</span>
+        <span class="footer__copyright">本站由 <a href="www.terrylmay.com">@terry.king</a> 创建，采用 <a href="https://github.com/onevcat/vno-jekyll">Vno - Jekyll</a> 作为主题，您可以在 GitHub 找到<a href="https://github.com/terryKing1992/terryKing1992.github.io">本站源码</a> - &copy; 2017</span>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+    
+  </body>
+
+</html>

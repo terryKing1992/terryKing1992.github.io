@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>中缀表达式转后缀表达式</title>
+  <meta name="description" content="中缀表达式到后缀表达式的转换、后缀表达式求值 思路 以及 Java代码实现要把表达式从中缀表达式的形式转换成用后缀表示法表示的等价表达式，必须了解操作符的优先级和结合性。优先级或者说操作符的强度决定求值顺序；优先级高 的操作符比优先级低的操作符先求值。">
+  <meta name="author" content="Wei Wang">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="中缀表达式转后缀表达式">
+  <meta name="twitter:description" content="中缀表达式到后缀表达式的转换、后缀表达式求值 思路 以及 Java代码实现要把表达式从中缀表达式的形式转换成用后缀表示法表示的等价表达式，必须了解操作符的优先级和结合性。优先级或者说操作符的强度决定求值顺序；优先级高 的操作符比优先级低的操作符先求值。">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="中缀表达式转后缀表达式">
+  <meta property="og:description" content="中缀表达式到后缀表达式的转换、后缀表达式求值 思路 以及 Java代码实现要把表达式从中缀表达式的形式转换成用后缀表示法表示的等价表达式，必须了解操作符的优先级和结合性。优先级或者说操作符的强度决定求值顺序；优先级高 的操作符比优先级低的操作符先求值。">
+
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+  <link href="/assets/images/favicon.png" rel="shortcut icon" type="image/png">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2016/02/convert-infixExpression-to-postfix/">
+  <link rel="alternate" type="application/rss+xml" title="Terry.King的技术博客" href="http://localhost:4000/feed.xml">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/assets/images/terryking_blog_background.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/#blog" title="前往 Terry.King的技术博客 的主页" class="blog-button"><img src="/assets/images/avatar_icon.jpg" width="80" alt="Terry.King的技术博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for Terry.King的技术博客" class="blog-button">Terry.King的技术博客</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">目前在从事AI领域的研究, 精通iOS开发 与 J2EE开发</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的技术博客，我是Terry.King</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        
+        <p class="panel-cover__description">希望通过本博客记录自己的技术发展历程</p>
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="博客" class="blog-button">博客</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="成长历程">成长</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="简历">简历</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="关于">关于</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="项目">项目</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+
+          <div><nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  
+  <!-- Weibo -->
+  <li class="navigation__item">
+    <a href="http://weibo.com/terrylmay" title="@terrylmay 的微博" target="_blank">
+      <i class='social fa fa-weibo'></i>
+      <span class="label">Weibo</span>
+    </a>
+  </li>
+  
+
+  
+  <!-- Github -->
+  <li class="navigation__item">
+    <a href="https://github.com/terryKing1992" title="@terryKing1992 的 Github" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+  
+  
+  
+  <!-- Twitter -->
+  <li class="navigation__item">
+    <a href="http://twitter.com/terryking" title="@terryking" target="_blank">
+      <i class='social fa fa-twitter'></i>
+      <span class="label">Twitter</span>
+    </a>
+  </li>
+  
+
+  
+
+  <!-- RSS -->
+  <li class="navigation__item">
+    <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+  
+  <!-- Email -->
+  <li class="navigation__item">
+    <a href="mailto:terrylmay@gmail.com" title="Contact me">
+      <i class='social fa fa-envelope'></i>
+      <span class="label">Email</span>
+    </a>
+  </li>
+  
+
+  </ul>
+</nav>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="panel-cover--overlay cover-blue"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2016-02-21 17:55:33 +0800" itemprop="datePublished" class="post-meta__date date">2016-02-21</time> &#8226; <span class="post-meta__tags tags">中缀转后缀表达式求值</span>
+    </div>
+    <h1 class="post-title">中缀表达式转后缀表达式</h1>
+  </header>
+
+  <section class="post">
+    <p>中缀表达式到后缀表达式的转换、后缀表达式求值 思路 以及 Java代码实现
+要把表达式从中缀表达式的形式转换成用后缀表示法表示的等价表达式，必须了解操作符的优先级和结合性。优先级或者说操作符的强度决定求值顺序；优先级高 的操作符比优先级低的操作符先求值。</p>
+
+<p>如果所有操作符优先级一样，那么求值顺序就取决于它们的结合性。操作符的结合性定义了相同优先级操作符组合的顺序（从右至左或从左至右）。</p>
+
+<p>转换过程包括用下面的算法读入中缀表达式的操作数、操作符和括号：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>1. 初始化一个空堆栈，将结果字符串变量置空。
+2. 从左到右读入中缀表达式，每次一个字符。
+3. 如果字符是操作数，将它添加到结果字符串。
+4. 如果字符是个操作符，弹出（pop）操作符，直至遇见开括号（opening parenthesis）、优先级较低的操作符或者同一优先级的右结合符号。把这个操作符压入（push）堆栈。
+5. 如果字符是个开括号，把它压入堆栈。
+6. 如果字符是个闭括号（closing parenthesis），在遇见开括号前，弹出所有操作符，然后把它们添加到结果字符串。
+7. 如果到达输入字符串的末尾，弹出所有操作符并添加到结果字符串。
+</code></pre>
+</div>
+
+<p>后缀表达式求值</p>
+
+<p>对后缀表达式求值比直接对中缀表达式求值简单。在后缀表达式中，不需要括号，而且操作符的优先级也不再起作用了。您可以用如下算法对后缀表达式求值：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>1. 初始化一个空堆栈
+2. 从左到右读入后缀表达式
+3. 如果字符是一个操作数，把它压入堆栈。
+4. 如果字符是个操作符，弹出两个操作数，执行恰当操作，然后把结果压入堆栈。如果您不能够弹出两个操作数，后缀表达式的语法就不正确。
+5. 到后缀表达式末尾，从堆栈中弹出结果。若后缀表达式格式正确，那么堆栈应该为空。
+</code></pre>
+</div>
+
+<p>前面理论知识引用自：http://blog.csdn.net/arduousbonze/article/details/3128084
+最近在做IOS，刚刚入门，想动手学习一下关于UICollectionView的使用，就自己写了一个关于计算器的实现，不过因为公司的各种限制，代码拿不出来，又没办法写博客，只好晚上回家写了.下面给出java关于算术表达式的实现：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>```java
+Stack&lt;Character&gt; stack = new Stack&lt;Character&gt;();  
+  String str = "3+4+5/6";  
+  StringBuffer stringBuffer = new StringBuffer();  
+  for (int i = 0; i &lt; str.length(); i++) {  
+    if(Character.isDigit(str.charAt(i))) {  
+        stringBuffer.append(str.charAt(i));  
+    }else {  
+        boolean isHighLevel = str.charAt(i) == '*' || str.charAt(i) =='/';  
+        Character ch = null;  
+        if(stack.isEmpty()) {  
+            stack.push(str.charAt(i));  
+        }else if(isHighLevel &amp;&amp; ((ch =stack.pop()) == '+' || ch =='-')){  
+            stack.push(ch);  
+            stack.push(str.charAt(i));  
+        }else {  
+            stringBuffer.append(stack.pop());  
+            stack.push(str.charAt(i));  
+        }  
+    }  
+  }  
+
+  while (!stack.isEmpty()) {  
+    stringBuffer.append(stack.pop());  
+  }  
+  System.out.println(stringBuffer.toString());  
+
+  String afterString = stringBuffer.toString();  
+  Stack&lt;Double&gt; intStack = new Stack&lt;Double&gt;();  
+  double result=0;  
+  for (int i = 0; i &lt; afterString.length(); i++) {  
+    if(Character.isDigit(afterString.charAt(i))) {  
+        intStack.push(Double.valueOf(afterString.charAt(i)+""));  
+    }else {  
+        Double top = intStack.pop();  
+        Double second = intStack.pop();  
+
+        switch(afterString.charAt(i))  
+        {  
+        case '*':  
+            result = top * second;  
+            break;  
+        case '/':  
+            result = second / top;  
+            break;  
+        case '+':  
+            result = top + second;  
+            break;  
+        case '-':  
+            result = second - top;  
+            break;  
+        }  
+        intStack.push(result);  
+    }  
+  }  
+  System.out.println(intStack.pop());  
+}
+```
+</code></pre>
+</div>
+
+<p>不过这种写法只能够解决输入为整数的情况，输入为double的情况还没有考虑，不过实现大同小异，只不过可能IOS里面没有栈的实现，可能要自己通过NSMutableArray来实现上面的方法了，初步设想是通过NSMutableArray 和NSNumber来实现，不过具体情况还得做过了再看.</p>
+
+  </section>
+</article>
+
+<section class="read-more">
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">最近的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/convert-infixExpression-to-postfix-in-java/" title="link to 中缀转后缀代码实现">中缀转后缀代码实现</a></h2>
+       <p class="excerpt">最近上一篇说到了关于算术表达式求值问题，上面已经大致有了思路，因为关于IOS的实现是在公司电脑上面写的，基本上已经知道怎么实现了,IOS可以实现关于多位数的运算，而下面是两种语言的实现。不过都只是实现了关于10以内的数字的运算.包括java实现以及c++语言的实现。java实现：Stack stack = new Stack();  String str = "3+4+5/6";    StringBuffer stringBuffer = new StringBuffer();    f...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 18:01:29 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">表达式求值</span><a class="btn-border-small" href=/2016/02/convert-infixExpression-to-postfix-in-java/>继续阅读</a></div>
+   </div>
+   
+   
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">更早的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/InputstreamInterface/" title="link to Java中Closeable和InputStream接口源码学习">Java中Closeable和InputStream接口源码学习</a></h2>
+       <p class="excerpt">接口Closeable继承自AutoCloseable，同时重写了关于 close关闭流的方法。Closeable 是一个能够被关闭的数据源，close方法被调用区释放对象持有的资源例如打开的文件.关闭stream流和与之相关的资源，如果流已经关闭了，那么再次调用这个方法是没有影响的。与AutoCloseable中的close方法一样，如果关闭操作失败，那么就要格外注意了。当IO异常发生时该方法会抛出IOExce异常	import java.io.IOException;/** * A {...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 17:50:05 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">CloseableInputStream</span><a class="btn-border-small" href=/2016/02/InputstreamInterface/>继续阅读</a></div>
+   </div>
+   
+</section>
+
+<section class="post-comments">
+  
+    <div id="disqus_thread"></div>
+    <script>
+    
+    var disqus_config = function () {
+        this.page.url = "http://localhost:4000/2016/02/convert-infixExpression-to-postfix/";
+        this.page.identifier = "/2016/02/convert-infixExpression-to-postfix/";
+    };
+
+    var disqus_shortname = 'vno-jekyll';
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
+    
+  
+  
+  
+  
+</section>
+
+
+            <section class="footer">
+    <footer>
+    	<span class="footer__copyright">本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享 署名-非商业性使用-相同方式共享 4.0 国际 许可协议</a></span>
+        <span class="footer__copyright">由 <a href="https://jekyllrb.com">Jekyll</a> 于 2017-06-19 生成，感谢 <a href="https://github.com">Github</a> 为本站提供稳定的代码托管服务</span>
+        <span class="footer__copyright">本站由 <a href="www.terrylmay.com">@terry.king</a> 创建，采用 <a href="https://github.com/onevcat/vno-jekyll">Vno - Jekyll</a> 作为主题，您可以在 GitHub 找到<a href="https://github.com/terryKing1992/terryKing1992.github.io">本站源码</a> - &copy; 2017</span>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+    
+  </body>
+
+</html>

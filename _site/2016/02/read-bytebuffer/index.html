@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>ByteBuffer源码详解</title>
+  <meta name="description" content="上篇主要看到了关于buffer的结构的定义,搞来搞去还是那4个变量在起作用，所有的方法都是围绕了capacity&gt;=limit&gt;=position&gt;=mark来起作用的。所以了解了这几个值的意义就相当于明白了buffer的工作原理了.这篇主要是看关于ByteBuffer的实现。">
+  <meta name="author" content="Wei Wang">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="ByteBuffer源码详解">
+  <meta name="twitter:description" content="上篇主要看到了关于buffer的结构的定义,搞来搞去还是那4个变量在起作用，所有的方法都是围绕了capacity&gt;=limit&gt;=position&gt;=mark来起作用的。所以了解了这几个值的意义就相当于明白了buffer的工作原理了.这篇主要是看关于ByteBuffer的实现。">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="ByteBuffer源码详解">
+  <meta property="og:description" content="上篇主要看到了关于buffer的结构的定义,搞来搞去还是那4个变量在起作用，所有的方法都是围绕了capacity&gt;=limit&gt;=position&gt;=mark来起作用的。所以了解了这几个值的意义就相当于明白了buffer的工作原理了.这篇主要是看关于ByteBuffer的实现。">
+
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+  <link href="/assets/images/favicon.png" rel="shortcut icon" type="image/png">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2016/02/read-bytebuffer/">
+  <link rel="alternate" type="application/rss+xml" title="Terry.King的技术博客" href="http://localhost:4000/feed.xml">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/assets/images/terryking_blog_background.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/#blog" title="前往 Terry.King的技术博客 的主页" class="blog-button"><img src="/assets/images/avatar_icon.jpg" width="80" alt="Terry.King的技术博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for Terry.King的技术博客" class="blog-button">Terry.King的技术博客</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">目前在从事AI领域的研究, 精通iOS开发 与 J2EE开发</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的技术博客，我是Terry.King</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        
+        <p class="panel-cover__description">希望通过本博客记录自己的技术发展历程</p>
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="博客" class="blog-button">博客</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="成长历程">成长</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="简历">简历</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="关于">关于</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="项目">项目</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+
+          <div><nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  
+  <!-- Weibo -->
+  <li class="navigation__item">
+    <a href="http://weibo.com/terrylmay" title="@terrylmay 的微博" target="_blank">
+      <i class='social fa fa-weibo'></i>
+      <span class="label">Weibo</span>
+    </a>
+  </li>
+  
+
+  
+  <!-- Github -->
+  <li class="navigation__item">
+    <a href="https://github.com/terryKing1992" title="@terryKing1992 的 Github" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+  
+  
+  
+  <!-- Twitter -->
+  <li class="navigation__item">
+    <a href="http://twitter.com/terryking" title="@terryking" target="_blank">
+      <i class='social fa fa-twitter'></i>
+      <span class="label">Twitter</span>
+    </a>
+  </li>
+  
+
+  
+
+  <!-- RSS -->
+  <li class="navigation__item">
+    <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+  
+  <!-- Email -->
+  <li class="navigation__item">
+    <a href="mailto:terrylmay@gmail.com" title="Contact me">
+      <i class='social fa fa-envelope'></i>
+      <span class="label">Email</span>
+    </a>
+  </li>
+  
+
+  </ul>
+</nav>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="panel-cover--overlay cover-blue"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2016-02-21 16:41:12 +0800" itemprop="datePublished" class="post-meta__date date">2016-02-21</time> &#8226; <span class="post-meta__tags tags">ByteBufferJava Source</span>
+    </div>
+    <h1 class="post-title">ByteBuffer源码详解</h1>
+  </header>
+
+  <section class="post">
+    <p>上篇主要看到了关于buffer的结构的定义,搞来搞去还是那4个变量在起作用，所有的方法都是围绕了capacity&gt;=limit&gt;=position&gt;=mark来起作用的。所以了解了这几个值的意义就相当于明白了buffer的工作原理了.这篇主要是看关于ByteBuffer的实现。</p>
+
+<p>虽然本篇的题目是java IO探索，其实前面介绍了好多，除了FileInputStream之外，其他的好像都是NIO的内容,不过这些东西都是交叉，具有一定的耦合性，所以，某一篇涉及到了另外一个知识点就要把它搞清楚，这个类才算真正的搞清楚了。
+NIO最主要的地方就是通过Channel和buffer对象来操作流数据，而ByteBuffer的内存分配不是在本地内存中分配内存，就是在jvm 堆中分配内存，在JVM中分配的内存受到垃圾回收机制的控制，而Direct ByteBuffer是通过JNI在Java虚拟机外的内存中分配了一块（所以即使在运行时通过-Xmx指定了Java虚拟机的最大堆内存，还是可能实例化超出该大小的Direct ByteBuffer），该内存块并不直接由Java虚拟机负责垃圾收集，但是在Direct ByteBuffer包装类被回收时，会通过Java Reference机制来释放该内存块这也就解释了为什么在BUffer类中有一个long型变量来存储地址了。这边应该是存储的JVM 分配的heap之外的内存，像c++一样访问。</p>
+
+<p>下面还是看源码吧~</p>
+
+<p>finalbyte[]hb; //这个是用来存储的缓冲字节的.其实说到底，所有的缓冲类肯定都是对字节或者其他数组的一种封装，本身类也是在基本类型上的一种扩展。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ByteBuffer(intmark,int pos,intlim, intcap,  // package-private
+				byte[] hb,intoffset) {
+
+   super(mark,pos, lim, cap);
+
+   this.hb = hb;
+
+   this.offset =offset;
+</code></pre>
+</div>
+
+<p>}</p>
+
+<p>对bytebuffer进行初始化，但是业务系统想要用这个方法是不可能的，因为它的属性是default的，表明包内可见。
+offset这个变量暂时还没有发现它的用途是什么。到后面应该有解释吧。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public static ByteBuffer allocateDirect(intcapacity) {
+  return new DirectByteBuffer(capacity);
+  	}
+</code></pre>
+</div>
+
+<p>这个就是在JVM堆之外分配的直接内存DirectByteBuffer对象，下篇可以研究一下这个。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>publicstatic ByteBuffer allocate(intcapacity) {
+    if (capacity &lt; 0)
+       throw new IllegalArgumentException();
+    return new HeapByteBuffer(capacity,capacity);
+}
+</code></pre>
+</div>
+
+<p>分配堆内存。后天可以看一下堆内存对象HeapByteBuffer</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>publicstatic ByteBuffer wrap(byte[]array,
+                               int offset, intlength)
+
+{
+    try {
+       return new HeapByteBuffer(array,offset,length);
+    } catch (IllegalArgumentException x) {
+       throw new IndexOutOfBoundsException();
+    }
+}
+</code></pre>
+</div>
+
+<p>这个方法把array数组中的从offset开始起，复制length个字节到buffer中。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>publicabstract ByteBuffer slice();
+</code></pre>
+</div>
+
+<p>返回一个新的Buffer对象，但是对象中的hp[]数组指向的地址与this对象是一个地址，就是两个ByteBuffer共享一个字节数组；</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>publicabstract ByteBuffer duplicate();
+</code></pre>
+</div>
+
+<p>这个方法跟slice()一样，不过一个是操作堆中的内存，一个操作直接内存。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>publicabstract ByteBuffer asReadOnlyBuffer();
+</code></pre>
+</div>
+
+<p>返回一个只读的缓存，内容跟this中的值完全一样，两个buffer中的hp[]指向了同一块内存；</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>publicabstractbyte get();//读模式
+</code></pre>
+</div>
+
+<p>从buffer的position位置读取一个字节；</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>publicabstract ByteBuffer put(byteb);//写模式
+</code></pre>
+</div>
+
+<p>把一个字节放入到position之后，然后position的值+1；</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>publicabstractbyte get(intindex);
+</code></pre>
+</div>
+
+<p>读取buffer中index位置的字节，如果index超过了limit，或者小于position的值，则会抛出数组越界异常。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>publicabstract ByteBuffer put(intindex,byte b);
+</code></pre>
+</div>
+
+<p>把字节写入到指定位置。index必须是合理的，并且这个buffer不是只读的。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public ByteBuffer get(byte[]dst,int offset,intlength) {
+
+    checkBounds(offset,length, dst.length);
+
+    if (length &gt; remaining())
+
+       throw new BufferUnderflowException();
+
+    int end = offset + length;
+
+    for (int i = offset; i &lt; end; i++)
+
+       dst[i] = get();
+
+    return this;
+
+}
+</code></pre>
+</div>
+
+<p>读取buffer中position开始的字节，然后放入到字节数组dst中，写入dst的时候从offset开始，读length到dst数组中。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public ByteBuffer put(ByteBuffersrc) {
+    if (src == this)
+       throw new IllegalArgumentException();
+
+    if (isReadOnly())
+       throw new ReadOnlyBufferException();
+
+    int n = src.remaining();
+    if (n &gt; remaining())
+       throw new BufferOverflowException();
+
+    for (int i = 0; i &lt; n; i++)
+        put(src.get());
+
+    return this;
+}
+</code></pre>
+</div>
+
+<p>从src这个buffer中的当前位置，读取buffer中未读字节到this buffer中。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public ByteBuffer put(byte[]src,int offset,intlength) {
+
+    checkBounds(offset,length, src.length);
+    if (length &gt; remaining())
+       throw new BufferOverflowException();
+
+    int end = offset + length;
+    for (int i = offset; i &lt; end; i++)
+       this.put(src[i]);
+
+    return this;
+}
+</code></pre>
+</div>
+
+<p>把src数组中的字节 从offset开始读取length字节到buffer中。如果要写入的数据length &gt; buffer数组中未写入的数据(limit - position)，则会抛出异常.否则将数据写入到buffer中。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>publicfinal boolean hasArray() {
+    return (hb !=null) &amp;&amp; !isReadOnly;
+}
+</code></pre>
+</div>
+
+<p>判断这个buffer中是否有可读的数组，hb！=null 并且不是只读；</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>publicfinal byte[] array() {
+    if (hb == null)
+       throw new UnsupportedOperationException();
+    if (isReadOnly)
+       throw new ReadOnlyBufferException();
+    return hb;
+}
+</code></pre>
+</div>
+
+<p>返回该buffer中的存储的底层字节数组；</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public final int arrayOffset() {
+    if (hb == null)
+       throw new UnsupportedOperationException();
+    if (isReadOnly)
+       throw new ReadOnlyBufferException();
+    return offset;
+}
+</code></pre>
+</div>
+
+<p>返回offset，但是还是没明白这个offset是干嘛用的，不然回来就得看别人写的到底是什么意思了。</p>
+
+<p>这个类方法有点多了，明天再继续看这些方法吧.</p>
+
+<p>虽然后面的这些方法都是抽象方法，不过知道这些方法的意思，对于后面的buffer子类的学习也是会有很大好处的.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public abstract ByteBuffer compact();
+</code></pre>
+</div>
+
+<p>截取this buffer中从position到limit得字节到另外一个buffer中，如果mark已经有值，那么设置mark=-1；设置返回的buffer的capacity=this.limit;</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public abstract boolean isDirect();
+</code></pre>
+</div>
+
+<p>判断该buffer是否为直接内存buffer</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public int hashCode() {
+
+    int h = 1;
+    int p = position();
+    for (int i = limit() - 1; i &gt;= p; i--)
+        h = 31 * h + (int)get(i);
+    return h;
+}
+</code></pre>
+</div>
+
+<p>每一个类的hashcode都是算法的精髓，看怎么样设计hash能够造成对象最小的碰撞。这是需要考虑的，有时间可以把java中的所有对象的hash算法拿来观摩一下。
+	 public boolean equals(Object ob) {</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    if (this == ob)
+        return true;
+
+    if (!(ob instanceof ByteBuffer))
+        return false;
+
+    ByteBuffer that = (ByteBuffer)ob;
+    if (this.remaining() != that.remaining())
+        return false;
+
+    int p = this.position();
+    for (int i = this.limit() - 1, j = that.limit() - 1; i &gt;= p; i--, j--)
+        if (!equals(this.get(i), that.get(j)))
+            return false;
+
+    return true;
+}
+</code></pre>
+</div>
+
+<p>判断两个buffer是否相等的判断条件，就是从position位置开始到limit位置结束，如果this buffer中的每个字节与另一个buffer中的从limit倒着数，直到this buffer的position，如果that中的字节与this完全相等，则说明两个buffer是相等的。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public int compareTo(ByteBuffer that) {
+    int n = this.position() + Math.min(this.remaining(), that.remaining());
+    for (int i = this.position(), j = that.position(); i &lt; n; i++, j++) {
+        int cmp = compare(this.get(i), that.get(j));
+        if (cmp != 0)
+            return cmp;
+    }
+    return this.remaining() - that.remaining();
+}
+</code></pre>
+</div>
+
+<p>buffer既然实现了Compareable接口，那么必然要实现这个方法的。具体逻辑就自己看吧。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public abstract CharBuffer asCharBuffer();
+</code></pre>
+</div>
+
+<p>通过这个对象来得到一个charbuffer对象。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public abstract ShortBuffer asShortBuffer();
+</code></pre>
+</div>
+
+<p>通过这个对象得到shortbuffer对象</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public abstract short getShort(int index);
+</code></pre>
+</div>
+
+<p>在index位置开始读取两个字节，并将这两个字节合并为一个short 类型变量</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public abstract int getInt();
+</code></pre>
+</div>
+
+<p>从position位置读取4个字节数据，合并到一个int类型变量中去。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public abstract IntBuffer asIntBuffer();
+</code></pre>
+</div>
+
+<p>通过这个对象得到Intbuffer对象</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public abstract long getLong();
+</code></pre>
+</div>
+
+<p>从position位置读取8个字节数据，合并到一个long类型变量中去。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public abstract LongBuffer asLongBuffer();
+</code></pre>
+</div>
+
+<p>后面肯定还会有floatbuffer以及doubleBuffer对象
+基本上就是上面的这些方法了.回头要一个个实验一下到底是什么效果才记得更牢一点</p>
+
+  </section>
+</article>
+
+<section class="read-more">
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">最近的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/FileChannel/" title="link to Java中FileChannel源码学习">Java中FileChannel源码学习</a></h2>
+       <p class="excerpt">昨天看到了FileInputStream类的内部实现，里面除了继承自InputStream类外，还多加了一个FileChannel的方法，通过getChannel()方法获取到文件的通道，今天看一下关于这个FileChannel到底做什么操作，它比FileInputStream有什么强大的地方?以及它的内部实现具体是怎样的。下面就看看FileChannel具体类实现是什么样的:刚开始就能看到相关类的介绍：A channel for reading, writing, mapping, an...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 17:30:42 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">FileChannel</span><a class="btn-border-small" href=/2016/02/FileChannel/>继续阅读</a></div>
+   </div>
+   
+   
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">更早的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/sample-post/" title="link to Sample Post">Sample Post</a></h2>
+       <p class="excerpt">You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-r...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-15 14:32:24 +0800" class="post-list__meta--date date">2016-02-15</time> &#8226; <span class="post-list__meta--tags tags"></span><a class="btn-border-small" href=/2016/02/sample-post/>继续阅读</a></div>
+   </div>
+   
+</section>
+
+<section class="post-comments">
+  
+    <div id="disqus_thread"></div>
+    <script>
+    
+    var disqus_config = function () {
+        this.page.url = "http://localhost:4000/2016/02/read-bytebuffer/";
+        this.page.identifier = "/2016/02/read-bytebuffer/";
+    };
+
+    var disqus_shortname = 'vno-jekyll';
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
+    
+  
+  
+  
+  
+</section>
+
+
+            <section class="footer">
+    <footer>
+    	<span class="footer__copyright">本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享 署名-非商业性使用-相同方式共享 4.0 国际 许可协议</a></span>
+        <span class="footer__copyright">由 <a href="https://jekyllrb.com">Jekyll</a> 于 2017-06-19 生成，感谢 <a href="https://github.com">Github</a> 为本站提供稳定的代码托管服务</span>
+        <span class="footer__copyright">本站由 <a href="www.terrylmay.com">@terry.king</a> 创建，采用 <a href="https://github.com/onevcat/vno-jekyll">Vno - Jekyll</a> 作为主题，您可以在 GitHub 找到<a href="https://github.com/terryKing1992/terryKing1992.github.io">本站源码</a> - &copy; 2017</span>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+    
+  </body>
+
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>Websocket入门以及工程搭建</title>
+  <meta name="description" content="websocket伴随Html5兴起这么长时间以来,我一直都想探一下websocket的奥秘.可是总是没有时间来看相关资料..今天感觉没什么事.而且有点闲,查看了一些别人的博客.基本了解了websocket在代码层的实现了.以后要做的就是关于websocket的原理了..首先动手写一个关于websocket的聊天...">
+  <meta name="author" content="Wei Wang">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Websocket入门以及工程搭建">
+  <meta name="twitter:description" content="websocket伴随Html5兴起这么长时间以来,我一直都想探一下websocket的奥秘.可是总是没有时间来看相关资料..今天感觉没什么事.而且有点闲,查看了一些别人的博客.基本了解了websocket在代码层的实现了.以后要做的就是关于websocket的原理了..首先动手写一个关于websocket的聊天...">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Websocket入门以及工程搭建">
+  <meta property="og:description" content="websocket伴随Html5兴起这么长时间以来,我一直都想探一下websocket的奥秘.可是总是没有时间来看相关资料..今天感觉没什么事.而且有点闲,查看了一些别人的博客.基本了解了websocket在代码层的实现了.以后要做的就是关于websocket的原理了..首先动手写一个关于websocket的聊天...">
+
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+  <link href="/assets/images/favicon.png" rel="shortcut icon" type="image/png">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2016/02/websocket/">
+  <link rel="alternate" type="application/rss+xml" title="Terry.King的技术博客" href="http://localhost:4000/feed.xml">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/assets/images/terryking_blog_background.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/#blog" title="前往 Terry.King的技术博客 的主页" class="blog-button"><img src="/assets/images/avatar_icon.jpg" width="80" alt="Terry.King的技术博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for Terry.King的技术博客" class="blog-button">Terry.King的技术博客</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">目前在从事AI领域的研究, 精通iOS开发 与 J2EE开发</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的技术博客，我是Terry.King</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        
+        <p class="panel-cover__description">希望通过本博客记录自己的技术发展历程</p>
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="博客" class="blog-button">博客</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="成长历程">成长</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="简历">简历</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="关于">关于</a></li>
+                
+                  <li class="navigation__item"><a href="" target="_blank" title="项目">项目</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+
+          <div><nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  
+  <!-- Weibo -->
+  <li class="navigation__item">
+    <a href="http://weibo.com/terrylmay" title="@terrylmay 的微博" target="_blank">
+      <i class='social fa fa-weibo'></i>
+      <span class="label">Weibo</span>
+    </a>
+  </li>
+  
+
+  
+  <!-- Github -->
+  <li class="navigation__item">
+    <a href="https://github.com/terryKing1992" title="@terryKing1992 的 Github" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+  
+  
+  
+  <!-- Twitter -->
+  <li class="navigation__item">
+    <a href="http://twitter.com/terryking" title="@terryking" target="_blank">
+      <i class='social fa fa-twitter'></i>
+      <span class="label">Twitter</span>
+    </a>
+  </li>
+  
+
+  
+
+  <!-- RSS -->
+  <li class="navigation__item">
+    <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+  
+  <!-- Email -->
+  <li class="navigation__item">
+    <a href="mailto:terrylmay@gmail.com" title="Contact me">
+      <i class='social fa fa-envelope'></i>
+      <span class="label">Email</span>
+    </a>
+  </li>
+  
+
+  </ul>
+</nav>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="panel-cover--overlay cover-blue"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2016-02-21 18:39:43 +0800" itemprop="datePublished" class="post-meta__date date">2016-02-21</time> &#8226; <span class="post-meta__tags tags">Websocket</span>
+    </div>
+    <h1 class="post-title">Websocket入门以及工程搭建</h1>
+  </header>
+
+  <section class="post">
+    <p>websocket伴随Html5兴起这么长时间以来,我一直都想探一下websocket的奥秘.可是总是没有时间来看相关资料..今天感觉没什么事.而且有点闲,查看了一些别人的博客.基本了解了websocket在代码层的实现了.以后要做的就是关于websocket的原理了..首先动手写一个关于websocket的聊天程序吧.当然 这个聊天程序也是基于j2ee的..客户端用原生的js来实现.首先要想使用websocket ，那么jdk的版本一定要是1.7以上的..websocket是1.7之后加的新特性.</p>
+
+<!-- more -->
+
+<p>那么我们开始代码层面的开发吧..
+首先 建立服务器端程序..</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>package com.system.maylor.test;  
+
+import java.io.IOException;  
+import java.nio.ByteBuffer;  
+import java.nio.CharBuffer;  
+import java.util.ArrayList;  
+
+import javax.servlet.http.HttpServletRequest;  
+
+import org.apache.catalina.websocket.MessageInbound;  
+import org.apache.catalina.websocket.StreamInbound;  
+import org.apache.catalina.websocket.WebSocketServlet;  
+import org.apache.catalina.websocket.WsOutbound;  
+
+public class WebSocketTest extends WebSocketServlet {  
+
+    private static final long serialVersionUID = -4853540828121130946L;  
+    private static ArrayList&lt;MyMessageInbound&gt; mmiList = new ArrayList&lt;MyMessageInbound&gt;();  
+
+    @Override  
+    protected StreamInbound createWebSocketInbound(String str,  
+            HttpServletRequest request) {  
+        return new MyMessageInbound();  
+    }  
+
+    private class MyMessageInbound extends MessageInbound {  
+        WsOutbound myoutbound;  
+
+        @Override  
+        public void onOpen(WsOutbound outbound) {  
+            try {  
+                System.out.println("Open Client.");  
+                this.myoutbound = outbound;  
+                mmiList.add(this);  
+                outbound.writeTextMessage(CharBuffer.wrap("Hello!"));  
+            } catch (IOException e) {  
+                e.printStackTrace();  
+            }  
+        }  
+
+        @Override  
+        public void onClose(int status) {  
+            System.out.println("Close Client.");  
+            mmiList.remove(this);  
+        }  
+                //当服务器端收到信息的时候,就对所有的连接进行遍历并且把收到的信息发送给所有用户  
+        @Override  
+        public void onTextMessage(CharBuffer cb) throws IOException {  
+            System.out.println("Accept Message : " + cb);  
+            for (MyMessageInbound mmib : mmiList) {  
+                CharBuffer buffer = CharBuffer.wrap(cb);  
+                mmib.myoutbound.writeTextMessage(buffer);  
+                mmib.myoutbound.flush();  
+            }  
+        }  
+
+        @Override  
+        public void onBinaryMessage(ByteBuffer bb) throws IOException {  
+        }  
+    }  
+
+}
+</code></pre>
+</div>
+
+<p>在服务器端创建一个servlet,继承自WebSocketServlet，当然也可以使用注解的方式实现..在这就不写注解的代码了.servlet创建好之后 当然要对servlet进行配置了.在web.l文件中进行配置</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;display-name&gt;Websocket&lt;/display-name&gt;  
+&lt;servlet&gt;  
+    &lt;servlet-name&gt;wsServlet&lt;/servlet-name&gt;  
+    &lt;servlet-class&gt;com.system.maylor.test.WebSocketTest&lt;/servlet-class&gt;  
+&lt;/servlet&gt;  
+&lt;servlet-mapping&gt;  
+    &lt;servlet-name&gt;wsServlet&lt;/servlet-name&gt;  
+    &lt;url-pattern&gt;/wsServlet&lt;/url-pattern&gt;  
+&lt;/servlet-mapping&gt;  
+</code></pre>
+</div>
+
+<p>把上面一段配置信息加入到你的web.xml文件中..这样服务器端的websocket就建立成功了..</p>
+
+<p>下面就是写客户端的代码了.index.html</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>  
+<span class="nt">&lt;html&gt;</span>  
+	<span class="nt">&lt;head&gt;</span>  
+		<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">UTF-8</span><span class="nt">&gt;</span>  
+		<span class="nt">&lt;title&gt;</span>Tomcat WebSocket Chat<span class="nt">&lt;/title&gt;</span>  
+		<span class="nt">&lt;script&gt;</span>  
+		<span class="p">[</span><span class="nx">html</span><span class="p">]</span> <span class="nx">view</span> <span class="nx">plaincopyprint</span><span class="p">?</span><span class="err">在</span><span class="nx">CODE</span><span class="err">上查看代码片派生到我的代码片</span>
+		<span class="c1">//建立客户端websocket  </span>
+		    <span class="kd">var</span> <span class="nx">ws</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="s2">"ws://localhost:8080/Websocket/wsServlet"</span><span class="p">);</span>  
+		<span class="p">[</span><span class="nx">html</span><span class="p">]</span> <span class="nx">view</span> <span class="nx">plaincopyprint</span><span class="p">?</span><span class="err">在</span><span class="nx">CODE</span><span class="err">上查看代码片派生到我的代码片</span>
+		       <span class="c1">//定义ws的一些回调函数  </span>
+		<span class="nx">ws</span><span class="p">.</span><span class="nx">onopen</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>  
+		<span class="p">};</span>  
+		<span class="p">[</span><span class="nx">html</span><span class="p">]</span> <span class="nx">view</span> <span class="nx">plaincopyprint</span><span class="p">?</span><span class="err">在</span><span class="nx">CODE</span><span class="err">上查看代码片派生到我的代码片</span>
+		<span class="c1">//当有消息传过来时执行的操作  </span>
+		    <span class="nx">ws</span><span class="p">.</span><span class="nx">onmessage</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>  
+		        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"chatlog"</span><span class="p">).</span><span class="nx">textContent</span> <span class="o">+=</span> <span class="nx">message</span><span class="p">.</span><span class="nx">data</span> <span class="o">+</span> <span class="s2">"\n"</span><span class="p">;</span>  
+		    <span class="p">};</span>  
+		    <span class="kd">function</span> <span class="nx">postToServer</span><span class="p">()</span> <span class="p">{</span>  
+		        <span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"msg"</span><span class="p">).</span><span class="nx">value</span><span class="p">);</span>  
+		        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"msg"</span><span class="p">).</span><span class="nx">value</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>  
+		    <span class="p">}</span>  
+		    <span class="kd">function</span> <span class="nx">closeConnect</span><span class="p">()</span> <span class="p">{</span>  
+		        <span class="nx">ws</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>  
+		    <span class="p">}</span>  
+		<span class="nt">&lt;/script&gt;</span>  
+	<span class="nt">&lt;/head&gt;</span>  
+	<span class="nt">&lt;body&gt;</span>  
+	    <span class="nt">&lt;textarea</span> <span class="na">id=</span><span class="s">"chatlog"</span> <span class="na">readonly</span><span class="nt">&gt;&lt;/textarea&gt;</span>  
+	    <span class="nt">&lt;br</span> <span class="nt">/&gt;</span>  
+	    <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"msg"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="nt">/&gt;</span>  
+	    <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">id=</span><span class="s">"sendButton"</span> <span class="na">onClick=</span><span class="s">"postToServer()"</span><span class="nt">&gt;</span>Send!<span class="nt">&lt;/button&gt;</span>  
+	    <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">id=</span><span class="s">"sendButton"</span> <span class="na">onClick=</span><span class="s">"closeConnect()"</span><span class="nt">&gt;</span>End<span class="nt">&lt;/button&gt;</span>  
+	<span class="nt">&lt;/body&gt;</span>  
+<span class="nt">&lt;/html&gt;</span>  
+</code></pre>
+</div>
+
+<p>这样基本上一个大厅聊天的程序就已经完成了.启动服务器.然后打开多个浏览器.同时访问index.</p>
+
+<p>html界面当某个浏览器发出消息时，在其他浏览器或者其他界面就可以收到这个消息了..因为这个是一个比较简单的聊天程序.</p>
+
+<p>不过想想最近做的一个基于socket的聊天程序.这样的代码确实简洁了不少.如果用socket编程的话,至少要开启两个线程.一个线程用来监听连接请求..另一个线程则用来监听处理某一个socket发来消息时，服务器的转发给所有的socket..我想可能websocket也是通过这种方式实现的.</p>
+
+<p>但至少在代码简洁层面上让我们更加容易读懂代码了一些,还有就是我感觉websocket比较智能的一点就是当连接断开时,服务器会知道这二个连接已断开.并且进行相应的处理.而socket不会监听到客户端socket断开的请求..必须在客户端手动的发送某一个特殊字符,比如end然后服务器端当接到这个end字符的时候认定客户端socket已经断开..以上是我关于socket的体会吧..有不对的地方欢迎指出.批评.</p>
+
+  </section>
+</article>
+
+<section class="read-more">
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">最近的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/how-to-start-tomcat-in-eclipse/" title="link to Eclipse中启动tomcat，对方无法访问解决方案">Eclipse中启动tomcat，对方无法访问解决方案</a></h2>
+       <p class="excerpt">大家都知道,Eclipse配置web服务器的时候是通过tomcat目录，然后建立一个虚拟的目录.在Eclipse中总是可以看到一个叫server的文件夹.里面存着一些tomcat服务器的配置信息，而且在server.xml中同时也配置这你要运行的工程的虚拟目录.当然,而当你用Eclipse启动tomcat是始终无法在浏览器中访问8080端口,这是什么原因呢?首先，我先把Eclipse中的tomcat关闭,然后找到放置tomcat 软件的目录.进入bin文件点击startup.bat的时候服...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 18:43:28 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">EclipseTomcat</span><a class="btn-border-small" href=/2016/02/how-to-start-tomcat-in-eclipse/>继续阅读</a></div>
+   </div>
+   
+   
+   
+   
+   <div class="read-more-item">
+       <span class="read-more-item-dim">更早的文章</span>
+       <h2 class="post-list__post-title post-title"><a href="/2016/02/java-garbage-collection/" title="link to JVM垃圾回收机制中有趣的问题">JVM垃圾回收机制中有趣的问题</a></h2>
+       <p class="excerpt">大家都知道,垃圾回收机制是jvm在后台的不确定的某个时候开启垃圾回收线程来进行一些不可达对象的回收（已经没有指针指向该对象）.基本上垃圾回收机制通常只回收堆以及本地方法栈里面的数据.对于方法区（perm space）或者叫它永久代里面的信息基本上不会回收..但也有例外的情况.因为回收这个里面的数据开销会比较大.回收回来的空间则相对于堆里面的要少了很多.话句话说就是性价比不高..好了,扯的远了.本文的主题是关于垃圾回收一个有趣的问题的,下面就让我们看看这是一个什么问题这个问题来自于《深入理解...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2016-02-21 18:37:46 +0800" class="post-list__meta--date date">2016-02-21</time> &#8226; <span class="post-list__meta--tags tags">JVM 内存回收</span><a class="btn-border-small" href=/2016/02/java-garbage-collection/>继续阅读</a></div>
+   </div>
+   
+</section>
+
+<section class="post-comments">
+  
+    <div id="disqus_thread"></div>
+    <script>
+    
+    var disqus_config = function () {
+        this.page.url = "http://localhost:4000/2016/02/websocket/";
+        this.page.identifier = "/2016/02/websocket/";
+    };
+
+    var disqus_shortname = 'vno-jekyll';
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
+    
+  
+  
+  
+  
+</section>
+
+
+            <section class="footer">
+    <footer>
+    	<span class="footer__copyright">本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享 署名-非商业性使用-相同方式共享 4.0 国际 许可协议</a></span>
+        <span class="footer__copyright">由 <a href="https://jekyllrb.com">Jekyll</a> 于 2017-06-19 生成，感谢 <a href="https://github.com">Github</a> 为本站提供稳定的代码托管服务</span>
+        <span class="footer__copyright">本站由 <a href="www.terrylmay.com">@terry.king</a> 创建，采用 <a href="https://github.com/onevcat/vno-jekyll">Vno - Jekyll</a> 作为主题，您可以在 GitHub 找到<a href="https://github.com/terryKing1992/terryKing1992.github.io">本站源码</a> - &copy; 2017</span>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+    
+  </body>
+
+</html>
