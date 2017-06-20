@@ -54,6 +54,9 @@ sparse_output = tf.sparse_to_dense(sparse_indices, output_shape, 2, default_valu
 sparse_indices = [[0, 1], [2, 4], [4 ,5], [6, 9]]
 output_shape = tf.zeros([6, 10]).shape
 sparse_output = tf.sparse_to_dense(sparse_indices, output_shape, 1, default_value=0) #生成的数据如下:# 生成的数据如下:sparse_output:
+```
+
+```
 [[0 1 0 0 0 0 0 0 0 0]
  [0 0 0 0 0 0 0 0 0 0]
  [0 0 0 0 1 0 0 0 0 0]
@@ -90,50 +93,67 @@ sparse_output = tf.sparse_to_dense(sparse_indices, output_shape, 1, default_valu
 ```
 
 最后的结果如下打印:
-
-  labels_expand:[[1]
-  [3]
-  [4]
-  [8]
-  [7]
-  [5]
-  [2]
-  [9]
-  [0]
-  [8]
-  [7]]
-  index_expand:[[ 0]
-  [ 1]
-  [ 2]
-  [ 3]
-  [ 4]
-  [ 5]
-  [ 6]
-  [ 7]
-  [ 8]
-  [ 9]
-  [10]]
-  concat_result:[[ 0  1]
-  [ 1  3]
-  [ 2  4]
-  [ 3  8]
-  [ 4  7]
-  [ 5  5]
-  [ 6  2]
-  [ 7  9]
-  [ 8  0]
-  [ 9  8]
-  [10  7]]
-  one_hot_of_labels:[[ 0.  1.  0.  0.  0.  0.  0.  0.  0.  0.]
-  [ 0.  0.  0.  1.  0.  0.  0.  0.  0.  0.]
-  [ 0.  0.  0.  0.  1.  0.  0.  0.  0.  0.]
-  [ 0.  0.  0.  0.  0.  0.  0.  0.  1.  0.]
-  [ 0.  0.  0.  0.  0.  0.  0.  1.  0.  0.]
-  [ 0.  0.  0.  0.  0.  1.  0.  0.  0.  0.]
-  [ 0.  0.  1.  0.  0.  0.  0.  0.  0.  0.]
-  [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  1.]
-  [ 1.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
-  [ 0.  0.  0.  0.  0.  0.  0.  0.  1.  0.]
-  [ 0.  0.  0.  0.  0.  0.  0.  1.  0.  0.]]
+    ```
+    labels_expand:[[1]
+    [3]
+    [4]
+    [8]
+    [7]
+    [5]
+    [2]
+    [9]
+    [0]
+    [8]
+    [7]]
+    index_expand:[[ 0]
+    [ 1]
+    [ 2]
+    [ 3]
+    [ 4]
+    [ 5]
+    [ 6]
+    [ 7]
+    [ 8]
+    [ 9]
+    [10]]
+    concat_result:[[ 0  1]
+    [ 1  3]
+    [ 2  4]
+    [ 3  8]
+    [ 4  7]
+    [ 5  5]
+    [ 6  2]
+    [ 7  9]
+    [ 8  0]
+    [ 9  8]
+    [10  7]]
+    one_hot_of_labels:[[ 0.  1.  0.  0.  0.  0.  0.  0.  0.  0.]
+    [ 0.  0.  0.  1.  0.  0.  0.  0.  0.  0.]
+    [ 0.  0.  0.  0.  1.  0.  0.  0.  0.  0.]
+    [ 0.  0.  0.  0.  0.  0.  0.  0.  1.  0.]
+    [ 0.  0.  0.  0.  0.  0.  0.  1.  0.  0.]
+    [ 0.  0.  0.  0.  0.  1.  0.  0.  0.  0.]
+    [ 0.  0.  1.  0.  0.  0.  0.  0.  0.  0.]
+    [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  1.]
+    [ 1.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
+    [ 0.  0.  0.  0.  0.  0.  0.  0.  1.  0.]
+    [ 0.  0.  0.  0.  0.  0.  0.  1.  0.  0.]]
+    ```
 
 这样就实现了labels的one-hot化。
+
+## 使用Numpy来实现Label的one-hot化
+
+  ```python
+    import numpy as np
+
+    labels  = [1, 3, 4, 8, 7, 5, 2, 9, 0, 8, 7]
+    one_hot_index = np.arange(len(labels)) * 10 + labels
+
+    print ('one_hot_index:{}'.format(one_hot_index))
+
+    one_hot = np.zeros((len(labels), 10))
+    one_hot.flat[one_hot_index] = 1
+
+    print('one_hot:{}'.format(one_hot))
+  ```
