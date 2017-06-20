@@ -93,7 +93,7 @@ sparse_output = tf.sparse_to_dense(sparse_indices, output_shape, 1, default_valu
 ```
 
 最后的结果如下打印:
-    ```
+    ```python
     labels_expand:[[1]
     [3]
     [4]
