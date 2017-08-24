@@ -16,57 +16,52 @@ Bean的Scope指Spring容器是如何创建Bean实例的, Bean的创建方式使�
 
 一、首先创建一个Bean类 命名为UserService
 
-	```JAVA
-		package com.terrylmay;
+	package com.terrylmay;
 
-		import org.springframework.context.annotation.Scope;
-		import org.springframework.stereotype.Service;
+	import org.springframework.context.annotation.Scope;
+	import org.springframework.stereotype.Service;
 
-		@Service
-		@Scope("prototype")
-		public class UserService {
-			public String getUserName() {
-				return "terrylmay";
-			}
+	@Service
+	@Scope("prototype")
+	public class UserService {
+		public String getUserName() {
+			return "terrylmay";
 		}
+	}
 
-	``` 
 
 二、修改上篇中的程序入口类
 
-	```Java
-		package com.terrylmay;
+	package com.terrylmay;
 
-		import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+	import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-		/**
-		 * SpringApplication entry
-		 *
-		 */
-		public class ApplicationStart {
-			public static void main(String[] args) {
-				AnnotationConfigApplicationContext configContext = new AnnotationConfigApplicationContext(BeanConfig.class);
-				UserComponent userComponent = configContext.getBean(UserComponent.class);
-				UserComponent userComponent1 = configContext.getBean(UserComponent.class);
+	/**
+	 * SpringApplication entry
+	 *
+	 */
+	public class ApplicationStart {
+		public static void main(String[] args) {
+			AnnotationConfigApplicationContext configContext = new AnnotationConfigApplicationContext(BeanConfig.class);
+			UserComponent userComponent = configContext.getBean(UserComponent.class);
+			UserComponent userComponent1 = configContext.getBean(UserComponent.class);
 
-				UserService userService = configContext.getBean(UserService.class);
-				UserService userService1 = configContext.getBean(UserService.class);
-				System.out.println(userComponent.getUserName());
-				System.out.println(userService.getUserName());
+			UserService userService = configContext.getBean(UserService.class);
+			UserService userService1 = configContext.getBean(UserService.class);
+			System.out.println(userComponent.getUserName());
+			System.out.println(userService.getUserName());
 
-				System.out.println(userComponent == userComponent1);
-				System.out.println(userService == userService1);
-				configContext.close();
-			}
+			System.out.println(userComponent == userComponent1);
+			System.out.println(userService == userService1);
+			configContext.close();
 		}
+	}
 
-	```
 最后程序的输出为:
 
-	```
-		terrylmay
-		terrylmay
-		true
-		false
-	```
+	terrylmay
+	terrylmay
+	true
+	false
+	
 表示Bean的默认scope容器中只产生一个实例, 而使用@Scope("prototype") 则每从容器中取出一次Bean 则会产生一个新的实例。

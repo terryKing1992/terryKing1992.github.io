@@ -45,18 +45,16 @@ tags: [Spring, 依赖注入]
 
 #### 3、创建Spring Bean配置类,主要告诉Spring容器去哪里加载Bean
 
-	```java
-		package com.terrylmay;
+	package com.terrylmay;
 
-		import org.springframework.context.annotation.ComponentScan;
-		import org.springframework.context.annotation.Configuration;
+	import org.springframework.context.annotation.ComponentScan;
+	import org.springframework.context.annotation.Configuration;
 
-		@Configuration
-		@ComponentScan("com.terrylmay")
-		public class BeanConfig {
+	@Configuration
+	@ComponentScan("com.terrylmay")
+	public class BeanConfig {
 
-		}
-	``` 
+	}
 
 其中com.terrylmay 是我工程下根包名, 即我的所有声明的Bean全部都在该包名下面
 @Configuration 告诉Spring 这是一个配置类
@@ -65,39 +63,37 @@ tags: [Spring, 依赖注入]
 
 #### 4、创建Bean类
 
-	```java
-		package com.terrylmay;
 
-		import org.springframework.stereotype.Component;
+	package com.terrylmay;
 
-		@Component
-		public class UserComponent {
-			public String getUserName() {
-				return "terrylmay";
-			}
+	import org.springframework.stereotype.Component;
+
+	@Component
+	public class UserComponent {
+		public String getUserName() {
+			return "terrylmay";
 		}
+	}
 
-	```
 如前面所有, 如果要声明Bean有4种方式, @Component是最普通也是最没有具体意义的一种
 
 #### 5、创建应用的入口类
+	
+	package com.terrylmay;
 
-	```
-		package com.terrylmay;
+	import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-		import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+	public class ApplicationStart {
+		public static void main(String[] args) {
+			AnnotationConfigApplicationContext configContext = new AnnotationConfigApplicationContext(BeanConfig.class);
+			UserComponent userComponent = configContext.getBean(UserComponent.class);
 
-		public class ApplicationStart {
-			public static void main(String[] args) {
-				AnnotationConfigApplicationContext configContext = new AnnotationConfigApplicationContext(BeanConfig.class);
-				UserComponent userComponent = configContext.getBean(UserComponent.class);
+			System.out.println(userComponent.getUserName());
 
-				System.out.println(userComponent.getUserName());
-
-				configContext.close();
-			}
+			configContext.close();
 		}
-	```
+	}
+
 上述代码中使用 AnnotationConfigApplicationContext 作为Spring容器, 将配置类信息传入构造函数.AnnotationConfigApplicationContext 从相应的包名下查找Bean并自动加载。
 
 所以在后面的程序中, 我们可以直接使用UserComponent.class 来获取该类的实例 并且调用方法。
@@ -106,22 +102,21 @@ tags: [Spring, 依赖注入]
 
 下面我们看简单配置类代码:
 
-	```Java
-		package com.terrylmay;
+	package com.terrylmay;
 
-		import org.springframework.context.annotation.Bean;
-		import org.springframework.context.annotation.ComponentScan;
-		import org.springframework.context.annotation.Configuration;
+	import org.springframework.context.annotation.Bean;
+	import org.springframework.context.annotation.ComponentScan;
+	import org.springframework.context.annotation.Configuration;
 
-		@Configuration
-		@ComponentScan("com.terrylmay")
-		public class BeanConfig {
-			@Bean
-			public UserComponent getUserComponent() {
-				return new UserComponent();
-			}
+	@Configuration
+	@ComponentScan("com.terrylmay")
+	public class BeanConfig {
+		@Bean
+		public UserComponent getUserComponent() {
+			return new UserComponent();
 		}
-	```
+	}
+
 使用这种方式配置Bean, 那么UserComponent类就不需要使用@Component等注解来修饰也可以达到同样的效果
 
 
