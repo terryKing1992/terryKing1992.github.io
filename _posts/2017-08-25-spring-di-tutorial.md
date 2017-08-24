@@ -43,7 +43,7 @@ tags: [Spring, 依赖注入]
 		<version>4.3.9.RELEASE</version>
 	</dependency>
 
-#### 3、创建Spring Bean配置类,主要告诉IoC去哪里加载Bean
+#### 3、创建Spring Bean配置类,主要告诉Spring容器去哪里加载Bean
 
 	```java
 		package com.terrylmay;
