@@ -72,7 +72,7 @@ tags: [Spring, Event]
 
 		public void onApplicationEvent(SingleChatMessageEvent chatMessage) {
 			System.out.println(
-					String.format("收到{}消息, 消息内容为{}", chatMessage.getMessageFrom(), chatMessage.getMessageContent()));
+					String.format("收到%s消息, 消息内容为%s", chatMessage.getMessageFrom(), chatMessage.getMessageContent()));
 		}
 
 	}
