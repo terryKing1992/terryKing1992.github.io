@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Spring中多线程用法
+title: Spring中定时任务用法
 date: 2017-08-28 23:37:37
 tags: [Spring, 定时任务]
 ---
