@@ -148,6 +148,7 @@ tags: [Spring, 单元测试]
 
 	mvn clean install -Dmaven.test.skip=false
 
-如果能看到![测试结果](/assets/images/2017-08-29-spring_run_test.png)
+如果能看到如下结果则说明单元测试是已经通过了的
+![测试结果](/assets/images/2017-08-29-spring_run_test.png)
 
 
