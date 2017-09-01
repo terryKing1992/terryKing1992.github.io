@@ -297,7 +297,7 @@ SpringMVC在服务开发框架中已经具有举足轻重的地位。下面我�
 
 4、打包运行查看日志是否有输出
 
-	![Logback模块作用之后的输出](/assets/images/2017-09-01-spring-logback-console.png)
+![Logback模块作用之后的输出](/assets/images/2017-09-01-spring-logback-console.png)
 
 
 
