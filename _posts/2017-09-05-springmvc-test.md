@@ -11,10 +11,10 @@ tags: [Spring, MVC, 测试]
 
 	<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
 	<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>4.3.9.RELEASE</version>
-			<scope>test</scope>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-test</artifactId>
+		<version>4.3.9.RELEASE</version>
+		<scope>test</scope>
 	</dependency>
 	<dependency>
 		<groupId>junit</groupId>
