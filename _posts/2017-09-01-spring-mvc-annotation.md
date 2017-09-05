@@ -108,7 +108,7 @@ SpringMVC中的注解包括@Controller、@RestController、@ResponseBody、@Requ
 
 我们通过浏览器访问该Get方法, 可以看到下图中网络请求的结果
 
-![用户网络请求截图](2017-09-05-spring-using-httpservlet-request.png)
+![用户网络请求截图](/assets/images/2017-09-05-spring-using-httpservlet-request.png)
 
 #### 访问接口中使用单路径参数
 
