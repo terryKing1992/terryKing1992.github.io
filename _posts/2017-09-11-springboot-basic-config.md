@@ -1,7 +1,7 @@
 ---
 layout: post
-title: 快速搭建SpringBoot框架
-date: 2017-09-11 23:00:00
+title: SpringBoot中基本配置的用法
+date: 2017-09-11 23:10:00
 tags: [SpringBoot]
 ---
 
