@@ -52,10 +52,19 @@ SpringBoot核心功能包括能够使用jar包独立运行、内嵌Servlet容器
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>${springboot.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>repackage</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</build>
 	</project>
+
 
 我们需要把原来建立Maven项目时自带的junit依赖删除, 因为SpringBoot Test中已经包含了该插件。
 这里我们增加了Spring Boot对Web的支持, 并且加入了SpringBoot对于Test的支持 以及 编译插件, 通过刷新依赖我们可以看到依赖树大概是如下这个样子:
