@@ -18,9 +18,9 @@ tags: [SpringBoot, JPA]
 ## 添加Spring Data Jpa依赖并且 添加mysql驱动依赖
 
 	<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>1.5.6.RELEASE</version>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-data-jpa</artifactId>
+		<version>1.5.6.RELEASE</version>
 	</dependency>
 
 	<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
