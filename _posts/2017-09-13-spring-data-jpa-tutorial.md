@@ -1,7 +1,7 @@
 ---
 layout: post
 title: SpringBoot中数据访问JPA的使用
-date: 2017-09-12 21:30:00
+date: 2017-09-13 21:30:00
 tags: [SpringBoot, JPA]
 ---
 
