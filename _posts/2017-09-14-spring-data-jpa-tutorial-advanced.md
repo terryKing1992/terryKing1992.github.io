@@ -1,6 +1,6 @@
 ---
 layout: post
-title: SpringBoot中数据访问JPA的使用
+title: SpringBoot中数据访问JPA的高级API使用
 date: 2017-09-14 21:30:00
 tags: [SpringBoot, JPA]
 ---
