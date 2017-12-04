@@ -124,10 +124,15 @@ tags: [Nginx, Html, 代理]
 
 	        access_log  logs/test_access.log  main;
 
-	        location /functions {
-	        	#这个地方指定被访问的文件夹位置, servless目录下面有一个functions目录存放的资源
-	            root   /data/servless;
-	            index  index.html index.htm;
+	        location /servless {
+	        	#该配置只的是 restful的contextPath=servless, 同时需要在外面访问的时候也可以使用servless的上下文根来访问
+	            proxy_read_timeout 300;
+	            proxy_connect_timeout 300;
+	            proxy_redirect off;
+	            proxy_set_header X-Forwarded-Proto $scheme;
+	            proxy_set_header X-Read-IP         $remote_addr;
+	            proxy_pass http://localhost:8080/servless/;
+	            client_max_body_size  1000m;
 	        }
 
 	        error_page   500 502 503 504  /50x.html;
