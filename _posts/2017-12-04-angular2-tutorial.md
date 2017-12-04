@@ -77,7 +77,7 @@ tags: [Angular2, Html, Type Script]
 
 一般我们会看到如下输出, 关于某一些包被放弃, 所以我们需要重新调整一下依赖
 
-！[Deprecate包](/assets/images/2017-12-04-deprecate-node-modules.png)
+![Deprecate包](/assets/images/2017-12-04-deprecate-node-modules.png)
 
 3、 运行如下命令调整关于一些deprecate的包
 
