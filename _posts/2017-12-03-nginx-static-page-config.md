@@ -75,7 +75,7 @@ tags: [Nginx, Html, 代理]
 	    }
 	}
 
-### 对于动态Restful接口的代理配置
+### 二、对于动态Restful接口的代理配置
 
 	user  nginx nginx;
 	worker_processes  8;
