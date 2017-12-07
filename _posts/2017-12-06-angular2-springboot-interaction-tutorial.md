@@ -93,8 +93,6 @@ tags: [Angular2, Springboot]
 
 	1、primeng组件: 里面提供了丰富的UI组件;
 	$ cnpm install primeng -S
-	2、http模块: 对于http的封装, 简单易用
-	$ cnpm install http -S
 	3、annimation组件
 	$ cnpm install @angular/animations --save
 	4、font-awesome依赖
@@ -129,6 +127,19 @@ tags: [Angular2, Springboot]
 			"secure": false
 		}
 	}
+
+并且修改package.json的配置文件
+
+	"scripts": {
+	    "ng": "ng",
+	    "start": "ng serve --proxy-config proxy.config.json",
+	    "build": "ng build",
+	    "test": "ng test",
+	    "lint": "ng lint",
+	    "e2e": "ng e2e"
+	  }
+
+当启动angular应用的时候, 加上--proxy-config 命令参数
 
 这样当我们在Angular程序中使用http访问/services/getPersonList/10这个访问路径的时候, angular2的proxy模块就会帮我们把请求转发到真实的http服务器。
 
@@ -249,6 +260,22 @@ tags: [Angular2, Springboot]
 
 到这里，基本上一个在本地可运行的Angular以及SpringBoot应用的交互框架就已经搭建完成了。
 
+### 七、FAQ
+
+##### 1、出现后台服务的404 Not Found错误
+
+	* 请查看自己的proxy.config.json文件是否存在
+	* 请查看自己的.angular-cli.json文件中有没有加入ng serve --proxy-config proxy.config.json
+	* 请查看自己的后台服务是否已经启动
+	* 查看Angular访问的上下文路径是否与SpringBoot的路径一致
+
+##### 2、如果出现需要Error, 表示需要添加CUSTOMER_SCHEMA的字段
+
+	  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+
+##### 3、如果出现界面元素不显示的问题
+
+	参考"styles模块中增加primeng的css依赖" 段落。
 
 
 
