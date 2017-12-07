@@ -22,9 +22,9 @@ blog_button:
 
 # Navigation buttons in the front page.
 nav:
-    - {title: 成长, description: 成长历程, url: ''}
-    - {title: 简历, description: 简历, url: ''}
-    - {title: 关于, description: 关于, url: ''}
+    - {title: 成长, description: 成长历程, url: 'growup'}
+    - {title: 简历, description: 简历, url: 'resume'}
+    - {title: 关于, description: 关于, url: 'about'}
     - {title: 项目, description: 项目, url: ''}
     # - {title: Another Button, description: A button, url: 'http://example.com'}
 
