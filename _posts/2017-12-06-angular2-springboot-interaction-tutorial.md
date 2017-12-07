@@ -113,7 +113,13 @@ tags: [Angular2, Springboot]
 		...
 	}
 
-其中具体的版本换成已安装好的
+其中css所在的相对路径中的组件真实路径你自己的就可以了, 本来以前可以使用如下方式的。
+但是最近使用的时候发现使用软连接的方式angular没办法加载css文件，所以只能写成具体版本的组件路径了。
+
+	"../node_modules/primeng/resources/themes/omega/theme.css",
+    "../node_modules/primeng/resources/primeng.min.css",
+    "../node_modules/font-awesome/css/font-awesome.min.css"
+
 
 #### 3、在项目根目录下创建一个proxy.config.json的文件, 并将如下内容拷贝到文件中
 
