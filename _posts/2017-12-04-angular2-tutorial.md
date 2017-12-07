@@ -2,7 +2,7 @@
 layout: post
 title: 本地如何搭建Angular2前端SPA框架
 date: 2017-12-03 21:30:00
-tags: [Angular2, Html, Type Script]
+tags: [Angular2, Html, TypeScript]
 ---
 
 本博客主要记录一下在使用angular2过程中遇到的一些问题, 以及记录如何搭建一个angular2的前端应用. 同时如何 结合SpringBoot搭建前后台应用,本文主要使用angular-cli来创建Angular应用, 使用TypeScript来作为开发语言进行开发.
@@ -54,6 +54,8 @@ tags: [Angular2, Html, Type Script]
 1、安装Angular-cli命令工具
 
 	$ cnpm install -g angular-cli@latest
+
+<span style="color: red;">使用cnpm install -g @angular/cli安装的话, 后面说的错误是不会出现的, 直接运行cnpm start即可看到效果</span>
 
 如果出现如下界面, 则说明angular/cli安装成功
 ![安装angular-cli结果](/assets/images/2017-12-04-install-angular-cli-using-cnpm.png)
