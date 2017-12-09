@@ -140,7 +140,16 @@ JPA允许用户使用NamedQuery来定义查询方法即通过一个名字映射�
 
 查找第0页的10个数据。
 
-7、比较复杂的查询方法Specification
+7、使用HQL进行更新操作
+
+使用@Modifying和@Query注解组合来完成更新动作
+
+	@Modifying
+	@Transactional
+	@Query("update User u set u.password=:userName")
+	int setPassword(@Param("userName") String userName);
+
+8、比较复杂的查询方法Specification
 
 JPA提供了基于准则查询的方式, 即Criteria查询.同时Spring Data JPA提供了一个Specification接口让我们更加方便的构造准则查询。
 
