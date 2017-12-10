@@ -19,9 +19,9 @@ Maven项目中, 在pom的依赖项中增加
 
 版本看使用SpringBoot的版本情况。
 
-### Actuator的配置类的服务访问
+### 二、Actuator的配置类的服务访问
 
-##### Actuator 通过/beans获得Bean的装配信息
+##### 1、Actuator 通过/beans获得Bean的装配信息
 
 通过[http://localhost:8080/beans](http://localhost:8080/beans)接口获得每一个Bean的情况
 
@@ -67,7 +67,7 @@ Maven项目中, 在pom的依赖项中增加
     * resource: 表示.class文件的物理位置, 这个会随着构建方式、运行方式的变化而变化
     * dependencies: 表示当前Bean注入的Bean名称列表
 
-##### Actuator 通过/autoconfig提供Conditional注解的Bean是否创建成功
+##### 2、Actuator 通过/autoconfig提供Conditional注解的Bean是否创建成功
 
 通过/autoconfig清晰的看到Bean的初始化是否成功[http://localhost:8080/autoconfig](http://localhost:8080/autoconfig)
 
@@ -102,7 +102,7 @@ Maven项目中, 在pom的依赖项中增加
 
 而在negativeMatches列表中, 举例: 因为在Classpath中没有ConnectionFactory、ActiveMQConnectionFactory这两个类, 所以ActiveMQAutoConfiguration类型的Bean没有创建。
 
-##### 查看SpringBoot的配置属性
+##### 3、查看SpringBoot的配置属性
 
 通过[http://localhost:8080/env](http://localhost:8080/env)可以查看应用程序可用的所有环境属性的列表.
 
@@ -187,7 +187,7 @@ Maven项目中, 在pom的依赖项中增加
 
     {"spring.jpa.show-sql":"true"}
 
-##### 通过/configprops查看应用的属性配置
+##### 4、通过/configprops查看应用的属性配置
 
 通过[http://localhost:8080/configprops](http://localhost:8080/configprops)查看配置的一些具体信息
 
@@ -223,7 +223,7 @@ Maven项目中, 在pom的依赖项中增加
 
 我们可以看到server的一些配置, 包括server的前缀。正如我们在application.properties中定义的server.port 以及 server.contextPath一样。同时该配置项也能够提供快速找到哪些属性可以配置。
 
-##### 使用/mappings查看应用中的服务都有哪些
+##### 5、使用/mappings查看应用中的服务都有哪些
 
 通过[http://localhost:8080/mappings](http://localhost:8080/mappings)查看当前web应用中的服务都有哪些
 
@@ -327,7 +327,7 @@ Maven项目中, 在pom的依赖项中增加
 
 ### Actuator运行时指标类服务
 
-##### 查看应用程序的度量信息
+##### 1、查看应用程序的度量信息
 
 为了了解应用程序的内存、堆栈信息, actuator提供了/metrics 服务用来提供应用的快照信息
 
@@ -396,7 +396,7 @@ Maven项目中, 在pom的依赖项中增加
 
     {"mem.free":197443}
 
-##### 使用/trace记录WEB请求的细节
+##### 2、使用/trace记录WEB请求的细节
 
 尽管/metrics可以提供Web请求计数器和计时器，可是度量信息中缺少了更加详细的信息。 使用[http://localhost:8080/trace](http://localhost:8080/trace)查看包括请求方法、路径、时间戳、请求响应的头信息。
 
@@ -432,7 +432,7 @@ Maven项目中, 在pom的依赖项中增加
 
 该接口能够返回最近100次http请求的详细信息。
 
-##### 使用/dump 服务获取程序线程的快照
+##### 3、使用/dump 服务获取程序线程的快照
 
     [
         {
@@ -456,7 +456,7 @@ Maven项目中, 在pom的依赖项中增加
         ...
     ]
 
-##### 使用/health 服务查看应用程序的健康情况
+##### 4、使用/health 服务查看应用程序的健康情况
 
     {
         "status": "UP",
