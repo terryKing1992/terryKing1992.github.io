@@ -142,6 +142,9 @@ tags: [Spring, 单元测试]
 
 可以使用eclipse或者Intellij中的Run按钮开启一个一个类测试
 
+在该测试类中之所以会使用ContextConfiguration注解, 是因为本类中没有使用到application.properties等外部加载文件, 
+只需要加载SpringContext环境, 并且完成对Bean的自动注入即可. 在实际的生产实践中, 需要使用SpringContextConfiguration注解来对Test类进行注解, 因为SpringContextConfiguration可以完全模拟SpringBootApplication的应用启动过程。
+
 5、 使用Maven运行单元测试
 
 使用命令运行单元测试

@@ -99,6 +99,9 @@ tags: [Spring, MVC, 测试]
 					.andExpect(content().contentType("text/plain;charset=UTF-8"));
 		}
 	}
+	
+在该测试类中之所以会使用ContextConfiguration注解, 是因为本类中没有使用到application.properties等外部加载文件, 
+只需要加载SpringContext环境, 并且完成对Bean的自动注入即可. 在实际的生产实践中, 需要使用SpringContextConfiguration注解来对Test类进行注解, 因为SpringContextConfiguration可以完全模拟SpringBootApplication的应用启动过程。
 
 运行测试用例, 可以看到运行结果
 
