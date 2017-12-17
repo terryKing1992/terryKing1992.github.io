@@ -163,6 +163,7 @@ tags: [软引用, 弱引用, 虚引用, 内存管理]
             thread.start();
             Thread.sleep(100000);
     }
+    
 可以发现日志也打印出了对象回收的相关信息
 
     当前的Byte[]对象引用地址为:java.lang.ref.WeakReference@10dd4940
