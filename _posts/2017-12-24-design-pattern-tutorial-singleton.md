@@ -25,7 +25,7 @@ tags: [设计模式, 单例模式]
 #### 饿汉式实现
 
 饿汉式实现也是比较简单的实现方式, 即在类被加载的时候就通过final 类型的静态成员变量进行声明与创建.同时也可以避免由于多线程访问而造成线程安全问题;
-
+    {% highlight ruby %}
     public class Singleton {
         private final static Singleton INSTANCE = new Singleton();
 
@@ -41,6 +41,7 @@ tags: [设计模式, 单例模式]
             
         }
     }
+    {% endhighlight %}
 
 当然我们也可以考虑Effective Java中提到的使用枚举类型来完成单例的实例化;
 
