@@ -22,7 +22,7 @@ tags: [设计准则, 抽象工厂]
         void run();
         int comfortDegree();
     }
-    <% end highlight %>
+    <% endhighlight %>
 
 然后我们创建宝马车的抽象实现:
 
@@ -34,7 +34,7 @@ tags: [设计准则, 抽象工厂]
 
         public abstract int comfortDegree();
     }
-    <% end highlight %>
+    <% endhighlight %>
 
 同时创建奔驰车的抽象实现:
 
@@ -46,7 +46,7 @@ tags: [设计准则, 抽象工厂]
 
         public abstract int comfortDegree();
     }
-    <% end highlight %>
+    <% endhighlight %>
 
 在分别实现SUV类型的车 与 普通轿车类之前, 我们先定义舒适度的指标:
 
@@ -67,7 +67,7 @@ tags: [设计准则, 抽象工厂]
             this.comfortDegree = comfortDegree;
         }
     }
-    <% end highlight %>
+    <% endhighlight %>
 
 下面我们分别实现宝马的SUV、轿车与奔驰的SUV 与轿车:
 
@@ -95,7 +95,7 @@ tags: [设计准则, 抽象工厂]
             return ComfortDegreeEnum.MIDDLE.getComfortDegree();
         }
     }
-    <% end highlight %>
+    <% endhighlight %>
 
 既然产品已经全部就位了, 我们需要开始构建工厂类的模型了
 
@@ -106,7 +106,7 @@ tags: [设计准则, 抽象工厂]
         ICar createSuvCar();
         ICar createSaloonCar();
     }
-    <% end highlight %>
+    <% endhighlight %>
 
 同时, 分别实现宝马与奔驰的工厂类:
 
@@ -130,7 +130,7 @@ tags: [设计准则, 抽象工厂]
             return new BenzSaloonCar();
         }
     } 
-    <% end highlight %>
+    <% endhighlight %>
 
 这样我们基本上就实现了创建产品下子产品的建模过程. 因为我们设计的程序需要对扩展开放, 对修改关闭; 同时接口是类行为的契约, 我们明白改变契约所带来的影响是很大的. 所以我们不能当一需要增加需求的时候就改接口, 那样必然会带来不可预知的问题. 所以, 在上述程序中, 增加CarFactory的方法是不可取的. 那么我们就很容易记清楚, 对扩展开放是对什么扩展开放了, 既然子产品的种类没法增加, 那么必然是可以增加产品的种类的.
 
