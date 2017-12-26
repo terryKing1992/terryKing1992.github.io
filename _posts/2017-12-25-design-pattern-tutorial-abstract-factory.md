@@ -17,16 +17,14 @@ tags: [设计准则, 抽象工厂]
 
 首先创建一个汽车的接口, 里面有代步功能 以及 舒适度访问:
 
-    <% highlight java %>
     interface ICar {
         void run();
         int comfortDegree();
     }
-    <% endhighlight %>
 
 然后我们创建宝马车的抽象实现:
 
-    <% highlight java %>
+
     abstract class AbstractBMWCar implements ICar {
         public void run() {
             System.out.println("宝马车开始跑了");
@@ -34,11 +32,11 @@ tags: [设计准则, 抽象工厂]
 
         public abstract int comfortDegree();
     }
-    <% endhighlight %>
+
 
 同时创建奔驰车的抽象实现:
 
-    <% highlight java %>
+
     abstract class AbstractBenzCar implements ICar {
         public void run() {
             System.out.println("奔驰车开始跑了");
@@ -46,11 +44,11 @@ tags: [设计准则, 抽象工厂]
 
         public abstract int comfortDegree();
     }
-    <% endhighlight %>
+
 
 在分别实现SUV类型的车 与 普通轿车类之前, 我们先定义舒适度的指标:
 
-    <% highlight java %>
+
     enum ComfortDegreeEnum {
         HIGH(10), MIDDLE(5), LOW(1);
         private int comfortDegree;
@@ -67,11 +65,11 @@ tags: [设计准则, 抽象工厂]
             this.comfortDegree = comfortDegree;
         }
     }
-    <% endhighlight %>
+
 
 下面我们分别实现宝马的SUV、轿车与奔驰的SUV 与轿车:
 
-    <% highlight java %>
+
     class BMWSuvCar extends AbstractBMWCar {
         public int comfortDegree() {
             return ComfortDegreeEnum.HIGH.getComfortDegree();
@@ -95,22 +93,22 @@ tags: [设计准则, 抽象工厂]
             return ComfortDegreeEnum.MIDDLE.getComfortDegree();
         }
     }
-    <% endhighlight %>
+
 
 既然产品已经全部就位了, 我们需要开始构建工厂类的模型了
 
 首先, 经过分析我们发现, 对于宝马或者奔驰下面都需要创建2中不同类型的车; 我们先定义工厂接口类
 
-    <% highlight java %>
+
     interface CarFactory {
         ICar createSuvCar();
         ICar createSaloonCar();
     }
-    <% endhighlight %>
+
 
 同时, 分别实现宝马与奔驰的工厂类:
 
-    <% highlight java %>
+
     class BMWCarFactory implements CarFactory {
         public ICar createSuvCar() {
             return new BMWSuvCar();
@@ -130,7 +128,7 @@ tags: [设计准则, 抽象工厂]
             return new BenzSaloonCar();
         }
     } 
-    <% endhighlight %>
+
 
 这样我们基本上就实现了创建产品下子产品的建模过程. 因为我们设计的程序需要对扩展开放, 对修改关闭; 同时接口是类行为的契约, 我们明白改变契约所带来的影响是很大的. 所以我们不能当一需要增加需求的时候就改接口, 那样必然会带来不可预知的问题. 所以, 在上述程序中, 增加CarFactory的方法是不可取的. 那么我们就很容易记清楚, 对扩展开放是对什么扩展开放了, 既然子产品的种类没法增加, 那么必然是可以增加产品的种类的.
 
