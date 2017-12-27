@@ -19,6 +19,8 @@ tags: [设计模式, 工厂模式]
 
 ![简单工厂类图](/assets/images/2017-12-25-design-pattern-simple-factory.png)
 
+### 应用场景
+
 下面我们看一个应用场景, 就是上面汽车的例子, 我们现在有个客户需要使用车, 第一种方式就是客户自己知道如何创建车, 并且自己试用车:
 
     public class Client {
