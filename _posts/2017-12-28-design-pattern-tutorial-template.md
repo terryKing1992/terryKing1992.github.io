@@ -34,44 +34,44 @@ ConcreteProductB: 功能同 ConcreteProductA
 
     class AbstractMessageConsumer implements IMessageConsumer {
 
-        public AbstractMessageConsumer() {
-            DefaultMQPushConsumer consumer =
-                    new DefaultMQPushConsumer("PushConsumer");
-            consumer.setNamesrvAddr("192.168.58.163:9876");
-            try {
-                //订阅PushTopic下Tag为push的消息
-                consumer.subscribe(this.getConsumerTopic(), this.getTag());
-                //程序第一次启动从消息队列头取数据
-                consumer.setConsumeFromWhere(
-                        ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
-                consumer.registerMessageListener(
-                        new MessageListenerConcurrently() {
-                            public ConsumeConcurrentlyStatus consumeMessage(
-                                    List<MessageExt> list,
-                                    ConsumeConcurrentlyContext Context) {
-                                Message msg = list.get(0);
-                                //处理接收到的消息
-                                this.consume(msg);
-                                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-                            }
-                        }
-                );
-                consumer.start();
-            } catch (Exception e) {
-
-            }
-        }
-
-        public void consume(Message message) {
-
-        }
-
-        protected abstract String getConsumerTopic();
-
-        protected abstract String getTag();
+    public AbstractMessageConsumer() {
+        this.init();
     }
 
-最后, 我们需要分别实现TopicA下的消息的监听处理 与 TopicB下的消息的监听处理, 即ConcreteTopicConsumer类:
+    public void init() {
+        DefaultMQPushConsumer consumer =
+                new DefaultMQPushConsumer("PushConsumer");
+        consumer.setNamesrvAddr("192.168.58.163:9876");
+        try {
+            //订阅PushTopic下Tag为push的消息
+            consumer.subscribe(this.getConsumerTopic(), this.getTag());
+            //程序第一次启动从消息队列头取数据
+            consumer.setConsumeFromWhere(
+                    ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
+            consumer.registerMessageListener(
+                    new MessageListenerConcurrently() {
+                        public ConsumeConcurrentlyStatus consumeMessage(
+                                List<MessageExt> list,
+                                ConsumeConcurrentlyContext Context) {
+                            Message msg = list.get(0);
+                            this.consumeMessage(msg);
+                            return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                        }
+                    }
+            );
+            consumer.start();
+        } catch (Exception e) {
+
+        }
+    }
+
+    protected abstract String getConsumerTopic();
+
+    protected abstract String getTag();
+
+}
+
+最后, 我们需要分别实现TopicA下的消息的监听处理 与 TopicB下的消息的监听处理 以及消息的处理, 即ConcreteTopicConsumer类:
 
     class ConcreteTopicConsumer extends AbstractMessageConsumer {
         @Override
@@ -83,4 +83,16 @@ ConcreteProductB: 功能同 ConcreteProductA
         protected String getTag() {
             return "push";
         }
+
+        public void consume(Message message) {
+            System.out.println(message.toString());
+        }
     }
+
+### 实践心得 
+
+模板方法在以下几个场景下可以使用:
+
+    1、多个子类有共同的方法, 并且实现逻辑基本上相同. 就如上面代码中初始化Consumer的过程逻辑基本上一样
+    2、如果有时间逻辑不太一样的, 也可以在子类中通过实现一个boolean类型返回值的函数, 然后在父类逻辑代码中调用子类的方法, 完成一些简单的逻辑控制
+    3、对于一些有if else的逻辑, 如果基本流程相同也可以使用模板方法来完成. 比如使用用户名、邮箱登录或者手机号任何一种方式登录.我们既可以再入口处判断是否是邮箱登录、或者手机号登录, 然后抽象出 ```用户``` 、 ```authToken```等登录属性, 同时抽象出 ```validUserName``` ```verifyAuthToken```等抽象方法供子类实现, 而抽象模板类中只需要挨个调用抽象方法即可.
