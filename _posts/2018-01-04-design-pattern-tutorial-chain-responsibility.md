@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 设计模式系列之责任链模式
-date: 2018-01-04 21:43:00
+date: 2018-01-04 22:43:00
 tags: [设计准则, 责任链模式]
 ---
 
@@ -11,7 +11,7 @@ tags: [设计准则, 责任链模式]
 
 责任链模式的类图:
 
-![责任链模式类图](/assts/images/2018-01-04-design-pattern-chain-responsibility.png)
+![责任链模式类图](/assets/images/2018-01-04-design-pattern-chain-responsibility.png)
 
 该类图中主要包含2个角色:
 
