@@ -20,6 +20,7 @@ tags: [Angular2, Springboot]
 
 #### 1、创建一个PersonModel的类
 
+```java
 	package com.terrylmay.springboot;
 
 	public class PersonModel {
@@ -67,11 +68,13 @@ tags: [Angular2, Springboot]
 	        this.address = address;
 	    }
 	}
+```
 
 #### 2、在创建一个RestController并且返回一个PersonModel列表
 
-	在类的注解上加上@RequestMapping(value = "/services")
+在类的注解上加上@RequestMapping(value = "/services")
 
+```java
 	@RequestMapping(value = "/getPersonList/{personNum}", method = RequestMethod.GET)
     public List<Map<String, Object>> getPersonList(@PathVariable(name = "personNum") Integer personNum) {
        List<Map<String, Object>> personList = new ArrayList<Map<String, Object>>();
@@ -82,6 +85,7 @@ tags: [Angular2, Springboot]
        
        return personList;
     }
+```
 
 我们通过浏览器访问, 能够得到如下结果:
 
@@ -100,6 +104,7 @@ tags: [Angular2, Springboot]
 
 #### 2、在.angular-cli.json文件的styles模块中增加primeng的css依赖
 
+```json
 	{
 		...,
 		"styles": [
@@ -110,26 +115,31 @@ tags: [Angular2, Springboot]
 		],
 		...
 	}
+```
 
 其中css所在的相对路径中的组件真实路径你自己的就可以了, 本来以前可以使用如下方式的。
 但是最近使用的时候发现使用软连接的方式angular没办法加载css文件，所以只能写成具体版本的组件路径了。
 
+```json
 	"../node_modules/primeng/resources/themes/omega/theme.css",
     "../node_modules/primeng/resources/primeng.min.css",
     "../node_modules/font-awesome/css/font-awesome.min.css"
-
+```
 
 #### 3、在项目根目录下创建一个proxy.config.json的文件, 并将如下内容拷贝到文件中
 
+```json
 	{
 		"/services": {
 			"target": "http://127.0.0.1:9080",
 			"secure": false
 		}
 	}
+```
 
 并且修改package.json的配置文件
 
+```json
 	"scripts": {
 	    "ng": "ng",
 	    "start": "ng serve --proxy-config proxy.config.json",
@@ -138,6 +148,7 @@ tags: [Angular2, Springboot]
 	    "lint": "ng lint",
 	    "e2e": "ng e2e"
 	  }
+```
 
 当启动angular应用的时候, 加上--proxy-config 命令参数
 
@@ -147,10 +158,13 @@ tags: [Angular2, Springboot]
 
 #### 1、在AppModule中增加Primeng的声明
 
+```javascript
 	import {DataTableModule,SharedModule} from 'primeng/primeng';
+```
 
 并且在imports中加入DataTableModule 以及 SharedModule模块
 
+```javascript
 	import { BrowserModule } from '@angular/platform-browser';
 	import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 	import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -176,6 +190,7 @@ tags: [Angular2, Springboot]
 	  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 	})
 	export class AppModule { }
+```
 
 因为使用自定义的元素, 所以需要将schema设置为CUSTOM_ELEMENTS_SCHEMA
 
@@ -185,12 +200,14 @@ tags: [Angular2, Springboot]
 
 并将如下内容拷贝到文件中
 
+```javascript
 	export class PersonModel {
 	    constructor(public userName: string, public age: number,
 	                public email: string, public address: string)
 	    {}
 
 	}
+```
 
 #### 3、创建一个person.service.ts文件
 
@@ -198,6 +215,7 @@ tags: [Angular2, Springboot]
 
 如果上面创建service命令报错, 那么就手工创建一个文件,并将如下内容拷贝到文件中
 
+```javascript
 	import { Injectable } from '@angular/core';
 	import { Http, Response } from '@angular/http';
 	import { PersonModel } from './person-model';
@@ -214,9 +232,11 @@ tags: [Angular2, Springboot]
 	                    .then(data => data);
 	    }
 	}
+```
 
 #### 4、将如下内容拷贝到app.component.ts中
 
+```javascript
 	import { Component } from '@angular/core';
 	import { PersonModel } from './person-model';
 	import { PersonService } from './person.service';
@@ -240,10 +260,11 @@ tags: [Angular2, Springboot]
 	      });
 	  }
 	}
-
+```
 
 #### 5、将界面元素拷贝到app.component.html中
 
+```html
 	<div>
 	    <p-dataTable [value]="personList">
 	        <p-column field="userName" header="userName"></p-column>
@@ -252,7 +273,7 @@ tags: [Angular2, Springboot]
 	        <p-column field="address" header="address"></p-column>
 	    </p-dataTable>
 	</div>
-
+```
 
 ### 六、运行程序查看效果
 

@@ -17,22 +17,27 @@ tags: [设计准则, 迪米特法则]
 
 实现一个点菜员的角色OrderClerk:
 
+```java
     class OrderClerk {
         public void order(String food) {
             System.out.println(food);
         }
     }
+```
 
 实现一个厨师的角色 Kitchener:
 
+```java
     class Kitchener {
         public void cook(String food) {
             System.out.println(food);
         }
     }
+```
 
 实现客户端点餐程序:
 
+```java
     public class Client {
         public static void main(String args[]) {
             String foodDescription = "来一份大份牛肉面";
@@ -43,11 +48,13 @@ tags: [设计准则, 迪米特法则]
             kitchener.cook("少放盐不要葱花, 快一点啊");
         }
     }
+```
 
 我们在程序中 先跟服务员说来一份大份牛肉面, 然后又跟后厨说少放盐、不要放葱花; 这样客户端就与点餐员 和 后厨产生了耦合;这样并不符合迪米特法则, 实际上我们根本不需要跟后厨打交道, 我们只与我们需要打交道的对象打交道; 那么我们其实在饭店只需要跟点菜员打交道就可以了.下面我们修改程序, 来实现只与点餐员打交道:
 
 首先, 重构点餐员的角色:
 
+```java
     class OrderClerk {
         Kitchener kitchener;
 
@@ -59,9 +66,11 @@ tags: [设计准则, 迪米特法则]
             kitchener.cook(food);
         }
     }
+```
 
 厨师代码不需要动, 我们看客户端程序应该怎么调用:
 
+```java
     public class Client {
         public static void main(String args[]) {
             String foodDescription = "来一份大份牛肉面, 少放盐不要葱花, 快一点啊";
@@ -69,6 +78,7 @@ tags: [设计准则, 迪米特法则]
             orderClerk.order(foodDescription);
         }
     }
+```
 
 通过重构我们让客户端只依赖了最直接的朋友```点菜员```. 这样就符合迪米特法则的第一个要求了, 客户端只与最直接的朋友打交道;
 

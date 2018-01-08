@@ -25,14 +25,16 @@ tags: [设计准则, 中介者模式]
 
 首先, 我们应该建立一个接口, 用来与不同的机器之间进行通信的接口(发送报文、接收报文):
 
+```java
     interface Computer {
         void sendMessage(String to, String content);
         void receiveMessage(String from, String content);
     }
+```
 
 后面分别实现A、B、C、D电脑的子类:
 
-
+```java
     abstract class AbstractComputer implements Computer {
 
         public void sendMessage(Computer to, String content) {
@@ -56,9 +58,11 @@ tags: [设计准则, 中介者模式]
     class D extends AbstractComputer {
         
     }
+```
 
 当有了电脑之后, 我们要怎么才能让这些电脑之间进行通信呢?当然还需要在各个电脑中保持其他电脑的引用了:
 
+```java
     abstract class AbstractComputer implements Computer {
 
         private Map<String, Computer> colleaguesMap = new HashMap<String, Computer>();
@@ -89,11 +93,13 @@ tags: [设计准则, 中介者模式]
             this.ip = ip;
         }
     }
+```
 
 我们需要给电脑类增加一个保持其他电脑的引用, 以及注册的方法.  到时候A电脑就可以与其他电脑通信了. 其他的电脑实现是一样的.
 
 我们下面看一下客户端怎么调用呢?
 
+```java
     class MediatorDemo {
         public static void main(String[] args) {
 
@@ -124,6 +130,7 @@ tags: [设计准则, 中介者模式]
 
         }
     }
+```
 
 如果按照上面的代码实现, 确实也能够完成各个电脑之间的通信功能, 只是代码看起来太长了, 而且扩展起来也非常的不方便, 最主要体现在客户端调用方面, 如果我现在需要增加一个电脑E跟各个电脑之间能够通信, 那么需要构造分别在多次调用A\B\C\D的register方法. 同时将A\B\C\D分别注册到E类中. 我的天啊, 这绝对不是人类能够看懂的代码了. 
 
@@ -135,14 +142,17 @@ tags: [设计准则, 中介者模式]
 
 当然, 需要增加中介者接口:
 
+```java
     interface Communication {
         void registerPeer(String ip, Computer computer);
         void sendMessage(String from, String to, String content);
         void receiveMessage(String from, String to, String content);
     }
+```
 
 同时实现具体的中介者Router:
 
+```java
     class Router implements Communication {
 
         private Map<String, Computer> colleaguesMap = new HashMap<String, Computer>();
@@ -163,9 +173,11 @@ tags: [设计准则, 中介者模式]
             System.out.println("电脑" + computerTo.getClass().getSimpleName() + "收到来自电脑" + computerFrom.getClass().getSimpleName() + "的消息:" + content);
         }
     }
+```
 
 同时我们在Computer的子类中, 增加对于Router这个中介者的引用, 并且把发送消息与接收消息的功能交给中介者去完成;
 
+```java
     interface Computer {
         void sendMessage(String to, String content);
         void receiveMessage(String from, String content);
@@ -222,9 +234,11 @@ tags: [设计准则, 中介者模式]
             super(ip, communication);
         }
     }
+```
 
 这样我们就将原来的网状结构变为了星状结构, 下面我们看一下客户端调用:
 
+```java
     class MediatorDemo {
         public static void main(String[] args) {
             Communication router = new Router();
@@ -237,6 +251,7 @@ tags: [设计准则, 中介者模式]
             computerB.sendMessage("192.168.1.102", "你好啊");
         }
     }
+```
 
 这么看来, 切实比原来简单好多. 如果要增加另外一个电脑的话, 我们只需要创建一个子类E, 并且客户端直接创建出来一个E然后就可以跟任意的电脑通信了. 中介者模式在这种场景下既减少了客户端调用的代码, 同时也增加了同事类的扩展性.
 

@@ -23,6 +23,7 @@ tags: [设计准则, 原型设计模式]
 
 首先, 我们先定义一个EmailMessage类：
 
+```java
     class EmailMessage {
         private String from;
         private String to;
@@ -58,9 +59,11 @@ tags: [设计准则, 原型设计模式]
             this.body = body;
         }
     }
+```
 
 当服务器收到群发有件请求的时候, 我们通过分析发件人的模型, 解析出来了发件人 与 收件人列表 以及 邮件内容信息, 那么后面我们怎么处理呢? 如果没有原型模式, 我们需要每次都创建一个EmailMessage对象, 并且调用底层的发送方法; 代码实现如下:
 
+```java
     public static void main(String[] args) {
         String from = "terry";
         List<String> toList = new ArrayList<String>(1000000);
@@ -86,9 +89,11 @@ tags: [设计准则, 原型设计模式]
         System.out.println("发送由发件人" + emailMessage.getFrom() + "发送给" + emailMessage.getTo() + "的邮件");
         return true;
     }
+```
 
 同样, 由于我们知道邮件对象的一些属性都是不变的, 只有```to```属性可能会发生变化, 所以我们也可以改为原型模式来复制对象, 并修改to的值, 然后调用```sendMessage```方法来实现.
 
+```java
     public static void sendToAll(String from, List<String> toList, String content) {
         long startTime = System.currentTimeMillis();
         EmailMessage emailMessagePrototype = new EmailMessage(from, "", content);
@@ -102,6 +107,7 @@ tags: [设计准则, 原型设计模式]
 
         System.out.println("总耗时为" + (endTime - startTime));
     }
+```
 
 因为我们的数据量很小, 而且对象的创建也不复杂, 所以在性能上面没有太突出的表现. 不过当我们创建结构复杂的对象时, 确实可以考虑使用原型模式, 毕竟是本地方法调用的直接内存拷贝; 在大数据对象上应该会有不错的表现.
 
@@ -117,6 +123,7 @@ tags: [设计准则, 原型设计模式]
 
 下面我们看一个例子, 来看浅复制是如何进行的:
 
+```java
     class EmailMessage implements Cloneable {
         private String from;
         private String to;
@@ -166,9 +173,11 @@ tags: [设计准则, 原型设计模式]
             return (EmailMessage) super.clone();
         }
     }
+```
 
 我们还拿上面的例子来举证, 并且在该类中增加一个引用数据类型的属性Date, 如果按照上面的写法, 因为是调用的父类的Clone方法, 所以只能完成浅复制的动作; 那具体的表现是怎样的呢? 我们通过一个客户端调用来看一下:
 
+```java
     public static void main(String[] args) throws CloneNotSupportedException {
         String from = "terry";
         String to = "yrret";
@@ -187,14 +196,17 @@ tags: [设计准则, 原型设计模式]
         System.out.println("emailMessage 修改后的时间为" + emailMessage.getSendDate());
         System.out.println("copyEmailMessage在emailMessage修改后的时间为" + copyEmailMessage.getSendDate());
     }
+```
 
 我们运行程序可以发现, 对于原型中属性的修改确实影响到了复制体上, 运行程序可以看到打印结果为:
 
+```java
     查看经过Clone产生的对象中的引用类型的对象是否指向同一个真实对象:true
     修改emailMessage前 的时间为Thu Dec 28 21:18:47 CST 2017
     copyEmailMessage的时间为Thu Dec 28 21:18:47 CST 2017
     emailMessage 修改后的时间为Sun Apr 19 22:45:27 CST 1970
     copyEmailMessage在emailMessage修改后的时间为Sun Apr 19 22:45:27 CST 1970
+```
 
 举个栗子说明这种情况, 科学家根据人类细胞克隆出来一个一模一样的人, 但是科学家克隆的时候对于心脏等器官使用了浅复制, 那么会出现什么情况呢? 复制体被打的心脏破裂之后, 克隆人本体也完蛋了. 那么本体应该要骂娘了, "**, TMD, 本来想我生病了可以从他身上摘下来器官来用呢, 他妈的克隆人打架把我给搞死了". 显然这种并不是我们想要的结果;
 
@@ -202,19 +214,23 @@ tags: [设计准则, 原型设计模式]
 
 我们只需要将上面的clone方法简单修改一下即可:
 
+```java
      public EmailMessage clone() throws CloneNotSupportedException {
         EmailMessage copy = (EmailMessage) super.clone();
         copy.sendDate = (Date)this.sendDate.clone();
         return copy;
     }
+```
 
 对于引用类型的对象, 我们在克隆方法中再次调用一次克隆, 而此时我们再次运行客户端代码, 查看输出:
 
+```java
     查看经过Clone产生的对象中的引用类型的对象是否指向同一个真实对象:false
     修改emailMessage前 的时间为Thu Dec 28 21:27:02 CST 2017
     copyEmailMessage的时间为Thu Dec 28 21:27:02 CST 2017
     emailMessage 修改后的时间为Sun Apr 19 22:45:27 CST 1970
     copyEmailMessage在emailMessage修改后的时间为Thu Dec 28 21:27:02 CST 2017
+```
 
 这样我们就完成了深复制的功能;
 

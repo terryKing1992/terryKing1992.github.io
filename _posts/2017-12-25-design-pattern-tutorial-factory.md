@@ -23,6 +23,7 @@ tags: [设计模式, 工厂模式]
 
 下面我们看一个应用场景, 就是上面汽车的例子, 我们现在有个客户需要使用车, 第一种方式就是客户自己知道如何创建车, 并且自己试用车:
 
+```java
     public class Client {
         public static void main(String[] args) {
             Car audiCar = new AudiCar();
@@ -48,9 +49,11 @@ tags: [设计模式, 工厂模式]
             System.out.println("宝马车启动, 要开始跑了");
         }
     }
+```
 
 上面实现的代码基本上可以满足需求了, 但是问题来了, 司机需要知道宝马 奥迪车如何创建, 如果新增一个汽车种类, 那么司机也要知道怎么创建. 相当于司机要拥有N 项技能才能随意的开自己想开的车; 同时司机与具体的车具有了耦合情况, 其实司机如果拿到驾驶证, 什么样的车都可以开; 司机不需要与车的具体的实现类耦合; 如果想要松耦合, 我们可以引入简单工厂模式;
 
+```java
     public class Client {
         public static void main(String[] args) {
             String carType = "audi";
@@ -87,6 +90,7 @@ tags: [设计模式, 工厂模式]
             System.out.println("宝马车启动, 要开始跑了");
         }
     }
+```
 
 引入SimpleFactory类, 根据司机传入的车的名称来创建具体的车的对象, 我们通过增加类减少了客户端与具体实现类的耦合, 有人可能有这样的疑问: 虽然减少了对具体实现类的依赖, 但是引入了新的依赖呀? 是的, 我们是引入了新的依赖, 但是客户端对于新的依赖, 只有一种依赖就是SimpleFactory, 而客户端对于AudiCar、BMWCar等依赖就有了好多依赖了. 还有人可能存在另外一种疑问, 那SimpleFactory 也需要对各个厂家的车具有依赖关系, 在系统中并没有减少依赖, 反而增加了一个中间类, 导致系统的依赖关系更加复杂了? 真的是这样吗? 确实是这样, 整个系统的依赖关系变的复杂了, 但是我们要从另外一个角度去看问题, 毕竟我们编写的代码都是为了上层服务的, "以客户为中心", 那么我们这么做极大的增加了客户的便利性;
 
@@ -96,6 +100,7 @@ tags: [设计模式, 工厂模式]
 
 当然, 我们为了更好的减少对于某一个方法的变动, 而增加方法对客户端影响会相对较小一些, 我们可以将原来的createCar方法拆分为2个方法甚至更多:
 
+```java
     public class Client {
         public static void main(String[] args) {
             Car car = SimpleFactory.createAudiCar();
@@ -112,6 +117,7 @@ tags: [设计模式, 工厂模式]
             return new BMWCar();
         }
     }
+```
 
 这样来看的话, 如果我们需要增加一个奔驰车, 那么我们只需要创建一个类, 并且给SimpleFactory增加一个新的方法即可. 在项目开发过程中, 一般依据我的经验来说的话, 对于需求的变动, 我们应该尽量设计的代码能够体现如下原则:
 
@@ -133,6 +139,7 @@ tags: [设计模式, 工厂模式]
 
 首先, 我们需要创建我们的产品类, 这个代码是不变的.
 
+```java
     interface Car {
         void run();
     }
@@ -148,15 +155,19 @@ tags: [设计模式, 工厂模式]
             System.out.println("宝马车启动, 要开始跑了");
         }
     }
+```
 
 后面我们创建工厂的抽象接口:
 
+```java
     interface CarFactory {
         Car createCar();
     }
+```
 
 然后创建奥迪 与 宝马的工厂具体实现
 
+```java
     class BMWFactory implements CarFactory {
         public Car createCar() {
             return new BMWCar();
@@ -168,9 +179,11 @@ tags: [设计模式, 工厂模式]
             return new AudiCar();
         }
     }
+```
 
 那么客户端怎么调用呢?
 
+```java
     public class Client {
         public static void main(String[] args) {
             CarFactory carFactory = new BMWFactory();
@@ -178,6 +191,7 @@ tags: [设计模式, 工厂模式]
             car.run();
         }
     }
+```
 
 那么, 如果想增加一个奔驰车怎么办呢? 我们只需要增加一个奔驰车类 以及 一个奔驰车对应的工厂类即可, 并且根据依赖倒置原则, 客户端依赖了工厂的抽象, 而不是依赖的具体实现; 工厂方法同时提供了高扩展性. 
 

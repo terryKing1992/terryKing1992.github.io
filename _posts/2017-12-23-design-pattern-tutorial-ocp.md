@@ -15,6 +15,7 @@ tags: [设计准则, 开闭原则]
 
 假设在开发一个推送系统过程中, 我们需要有3中方式的推送: 按照使用系统本身的推送(MQTT), 使用Google Android官方推送GCM, 使用iOS官方推送APNS, 那么在实现过程中。如果不加思考的就开始编码, 我们可能写出来如下的代码:
 
+```java
     package com.terrylmay.springboot;
 
     import java.util.UUID;
@@ -76,7 +77,7 @@ tags: [设计准则, 开闭原则]
             this.deviceToken = deviceToken;
         }
     }
-
+```
 
 当然从上面的程序来说, 感觉还可以。我们对于不同的消息都有单独的方法来处理, 满足方法层面的单一责任原则. 但是如果我们后面要扩展, 那么就需要在原有类的基础上修改. 比如我要添加一个小米推送的策略以及百度推送的策略呢? 那么需要在原有的类的基础上增加```pushByXM``` 和 ```pushByBaiDu``` 的方法. 这样做虽然也符合对扩展开放, 但仅仅是在方法层面的开放, 但是在类层面显然不符合对修改封闭的原则 以及 对扩展开放的原则. 同时在高层调用的时候, 我们同样需要修改```if else ```的代码, 那么如何才能够做到同时对扩展开放 对修改关闭呢?
 
@@ -84,6 +85,7 @@ tags: [设计准则, 开闭原则]
 
 首先, 因为推送具有多个通道类型的推送, 那么我们先将消息进行重构, 因为推送消息都需要有消息体才可以、设备ID等. 消息推送通道类型在我们这个例子中也是需要的. 所以我们经过分析开发出如下代码:
 
+```java
     class PushMessage {
         private String message;
         private String deviceToken;
@@ -139,9 +141,11 @@ tags: [设计准则, 开闭原则]
             this.setPushChannelType(PushChannelType.GCM);
         }
     }
+```
 
 我们通过分析创建出了3中不同的推送消息, 这样当有另外一种消息需要扩展的时候, 我们只需要创建一个子类就可以了. 后面我们要对 推送消息的客户端进行重构。
 
+```java
     interface IPushClient {
         void pushMessage(PushMessage pushMessage);
     }
@@ -166,9 +170,11 @@ tags: [设计准则, 开闭原则]
 
         }
     }
+```
 
 我们对PushClient进行重构, 基于面向接口编程, 有子类实现具体的方法. 如果有另外一种比如小米推送或者百度推送的支持, 那么再重新写一个IPushClient的实现类就可以了.这样我们做到了对类的修改关闭, 对类的扩展开放了.这样看来基本上实现了开闭原则, 我们来看一下客户端代码应该怎么写:
 
+```java
     import java.util.UUID;
 
     public class PushDemo {
@@ -178,9 +184,11 @@ tags: [设计准则, 开闭原则]
             pushClient.pushMessage(pushMessage);
         }
     }
+```
 
 基于上述上层代码, 如果我们要使用APNS的推送, 应该怎么做呢? 将MQTT相关的东西(PushMessage、PushClient)改为APNS的即可.这样看来, 当我们新增一种消息通道, 需要修改代码的两行就能搞定了. 这样的代码在我看来已经非常不错了, 具有很高的扩展性. 但是根据最小知识原则, 上层代码都不需要知道到底初始化哪个推送客户端就可以完成推送的功能. 我们又引入了BeanContainer的概念. 这个地方只是模拟Spring ComponentScan之后的bean的状态;
 
+```java
     class BeanContainer {
         private final static Map<String, IPushClient> beanContainerMap = new HashMap<String, IPushClient>();
 
@@ -194,9 +202,11 @@ tags: [设计准则, 开闭原则]
             return beanContainerMap.get(pushType);
         }
     }
+```
 
 同时客户端代码调整为:
 
+```java
     import java.util.HashMap;
     import java.util.Map;
     import java.util.UUID;
@@ -208,6 +218,7 @@ tags: [设计准则, 开闭原则]
             pushClient.pushMessage(pushMessage);
         }
     }
+```
 
  这样客户端当改变推送类型的时候,只需要修改一行代码, 即只需要知道我要推送的消息是哪种类型的, 然后你们给我我需要的PushClient, 让我能完成推送功能即可. 其他的上层调用方完全不用关系. 同时代码也具有了很高的扩展性. 符合开闭原则。
 

@@ -69,6 +69,7 @@ tags: [设计准则, 单一责任原则]
 
 比如现在有一个文件操作类, 该类主要完成文件 以及 目录创建工作；那么我们开始写代码了:
 
+```java
     public static class FileUtils {
         public static boolean createFile(String fileName) throws IOException {
 
@@ -99,9 +100,11 @@ tags: [设计准则, 单一责任原则]
             return file.mkdirs();
         }
     }
+```
 
 这时候我们发现, 在两个方法中都有对字符串的是否为null 以及 是否为空字符 进行判断, 那么我们根据代码重用原则 对代码进行重构, 抽取一个公共方法, 提取对字符串的判断
 
+```java
     public static class FileUtils {
         public static boolean createFile(String fileName) throws IOException {
 
@@ -139,14 +142,17 @@ tags: [设计准则, 单一责任原则]
             return file.mkdirs();
         }
     }
+```
 
 那么我们的文件操作类里面就有了对于字符串的判断语句, 这样也就同样违背了单一责任原则; 所以我们需要将对字符串的判断移出到StringUtils类中; 
 
+```java
     public static class StringUtils {
         public static boolean isEmpty(Object str) {
             return str == null || "".equals(str);
         }
     }
+```
 
 这样就完成了类责任的单一性;
 
@@ -154,11 +160,13 @@ tags: [设计准则, 单一责任原则]
 
 对于方法的单一责任原则, 就更好理解了; 一个方法仅做一件事; 比如在进行数据库操作的时候, 如果我们想定义数据的存储 与 更新功能, 大部分人会定义两个接口, 一个是插入操作、另外一个是更新操作;但是也有一部分人会这样写代码:
 
+```java
     public class UserRepository {
         public UserEntity saveOrUpdateUser(UserEntity userEntity) {
 
         }
     }
+```
 
 我们能够看到, 该方法中完成了几个操作? 最少是3个不同的功能, 第一 插入操作; 第二 更新操作 第三 查询操作; 这种代码相比于定义3个接口来说 更容易出现Bug 而且 对于后面的维护也不是很容易; 当然有人会说这么一个小功能 很好维护;是的!这仅仅是几行代码就能完成的功能相对来说还能维护, 但是当一个方法的职责很多 而且代码很多 并且有很多if语句判断的时候, 对于代码阅读、代码维护、代码扩展、函数单个功能变更都将是灾难性的;
 

@@ -13,6 +13,7 @@ tags: [设计准则, 接口隔离原则]
 
 举一个简单的例子吧, 虽然不不懂车, 但是我看到豪车也觉得很帅. 这次我们就拿车作为例子进行说明; 假设我们现在有两种车, 一种是能够开盖的跑车, 一种是普通的轿车. 但是他们能够提供载人的功能;我们基于该场景开发一个程序; 首先定义 一个车行为的接口ICar, 同时实现两个具体的类 
 
+```java
     public interface ICar {
         void run();
         void openRoof() throws UnsupportedOperationException;
@@ -37,23 +38,29 @@ tags: [设计准则, 接口隔离原则]
             throw new UnsupportedOperationException();
         }
     }
+```
 
 瞬间就完成了对于程序的开发, 但同时我们也发现了一些问题, 该程序并没有遵守接口隔离原则, 因为NormalCar依赖了他不需要的接口;openRoof接口. 下面为了使得程序遵守接口隔离原则, 我们对程序进行一些修改.首先将ICar接口分离成两个接口INormalCar 以及 IOpenRoofCar 这样的话, 我们的实现类就不会依赖不需要的接口了. 下面看修改后的代码:
 
 INormalCar接口:
 
+```java
     interface INormalCar {
         void run();
     }
+```
 
 IOpenRoofCar接口 继承 INormalCar接口:
 
+```java
     interface IOpenRoofCar extends INormalCar {
         void openRoof();
     }
+```
 
 具体的实现类如下:
 
+```java
     class OpenRoofCar implements IOpenRoofCar {
         public void run() {
             System.out.println("我已经在全力跑了");
@@ -69,6 +76,7 @@ IOpenRoofCar接口 继承 INormalCar接口:
             System.out.println("疾驰的感觉就是爽");
         }
     }
+```
 
 这样我就就做到了接口隔离;
 
@@ -89,6 +97,7 @@ IOpenRoofCar接口 继承 INormalCar接口:
 
 我们在单一责任原则的博客里面，我们提到了数据库相关的接口, 现在我们对他进行一点变形:
 
+```java
     public interface IDBConnection {
         String getDBDriverName();
         String getDBUrl();
@@ -99,5 +108,6 @@ IOpenRoofCar接口 继承 INormalCar接口:
         //去掉executeSQL接口
         <!-- Object executeSQL(String sql) -->
     }
+```
 
 我们可以看到, 因为基本上使用JDBC操作数据库, 这些数据是必须要定义的 即在数据库连接接口的实现类中以上定义的方法都是需要实现的, 接口中并没有实现类不需要的方法. 那我们可以说该接口的定义符合接口隔离原则. 但是经我们上次分析, 该接口定义并不符合单一责任原则; 同样的, 符合单一责任原则的 有时候 又不一定符合接口隔离原则, 所以基于该两项原则去开发接口才能够具有很好的效果.

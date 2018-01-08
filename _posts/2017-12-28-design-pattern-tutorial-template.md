@@ -26,53 +26,58 @@ ConcreteProductB: 功能同 ConcreteProductA
 
 模板方法模式在实际工程开发过程中, 使用的场景已经该是很多的. 比如在项目中 有一个使用MQ的需求, 同时MQ的消费者有多个, 分别负责消费不同Topic下的消息; 我们可以根据该场景进行建模; 因为消费者的行为就是消费消息, 我们先定义一个消费接口IMessageConsumer
 
+```java
     interface IMessageConsumer {
         void consume(Message message);
     }
+```
 
 然后, 我们借助于RocketMQ的客户端来完成我们抽象消费者类的创建:
 
+```java
     class AbstractMessageConsumer implements IMessageConsumer {
 
-    public AbstractMessageConsumer() {
-        this.init();
-    }
-
-    public void init() {
-        DefaultMQPushConsumer consumer =
-                new DefaultMQPushConsumer("PushConsumer");
-        consumer.setNamesrvAddr("192.168.58.163:9876");
-        try {
-            //订阅PushTopic下Tag为push的消息
-            consumer.subscribe(this.getConsumerTopic(), this.getTag());
-            //程序第一次启动从消息队列头取数据
-            consumer.setConsumeFromWhere(
-                    ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
-            consumer.registerMessageListener(
-                    new MessageListenerConcurrently() {
-                        public ConsumeConcurrentlyStatus consumeMessage(
-                                List<MessageExt> list,
-                                ConsumeConcurrentlyContext Context) {
-                            Message msg = list.get(0);
-                            this.consumeMessage(msg);
-                            return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-                        }
-                    }
-            );
-            consumer.start();
-        } catch (Exception e) {
-
+        public AbstractMessageConsumer() {
+            this.init();
         }
+
+        public void init() {
+            DefaultMQPushConsumer consumer =
+                    new DefaultMQPushConsumer("PushConsumer");
+            consumer.setNamesrvAddr("192.168.58.163:9876");
+            try {
+                //订阅PushTopic下Tag为push的消息
+                consumer.subscribe(this.getConsumerTopic(), this.getTag());
+                //程序第一次启动从消息队列头取数据
+                consumer.setConsumeFromWhere(
+                        ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
+                consumer.registerMessageListener(
+                        new MessageListenerConcurrently() {
+                            public ConsumeConcurrentlyStatus consumeMessage(
+                                    List<MessageExt> list,
+                                    ConsumeConcurrentlyContext Context) {
+                                Message msg = list.get(0);
+                                this.consumeMessage(msg);
+                                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                            }
+                        }
+                );
+                consumer.start();
+            } catch (Exception e) {
+
+            }
+        }
+
+        protected abstract String getConsumerTopic();
+
+        protected abstract String getTag();
+
     }
-
-    protected abstract String getConsumerTopic();
-
-    protected abstract String getTag();
-
-}
+    ```
 
 最后, 我们需要分别实现TopicA下的消息的监听处理 与 TopicB下的消息的监听处理 以及消息的处理, 即ConcreteTopicConsumer类:
 
+```java
     class ConcreteTopicConsumer extends AbstractMessageConsumer {
         @Override
         protected String getConsumerTopic() {
@@ -88,6 +93,7 @@ ConcreteProductB: 功能同 ConcreteProductA
             System.out.println(message.toString());
         }
     }
+```
 
 ### 实践心得 
 

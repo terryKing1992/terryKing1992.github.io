@@ -18,9 +18,13 @@ tags: [设计准则, 建造者模式]
 在建造者模式中, 有如下6个角色:
 
 Product接口: 约束产品中的有多少个零件; 通过定义接口中的setPartA等方法实现
+
 ConcreteProduct类: 对于产品Product接口的具体实现;
+
 Builder接口或者抽象类: 规范产品的组件, 一般有子类实现
+
 ConcreteBuilder类: 负责具体的产品对象的构建
+
 Director类: 负责安排产品的构建过程
 
 上面整个对于建造者的描述虽然加入了通俗的语言描述, 但是还是很抽象的. 到底建造者模式怎么用? 在哪些场景下可以用?正是本文所要描述的.
@@ -33,13 +37,16 @@ Director类: 负责安排产品的构建过程
 
 首先, 我们需要先创建产品类的接口 ```IPhone```:
 
+```java
     interface IPhone {
         void call();
         void surfOnline();
     }
+```
 
 然后, 我们创建产品的具体实现:
 
+```java
     class XiaomiPhone implements IPhone {
         private String cpu;
         private String screen;
@@ -95,11 +102,13 @@ Director类: 负责安排产品的构建过程
             this.screw = screw;
         }
     }
+```
 
 这时候我们的产品类就已经创建完成了, 那么我们现在就要看工人们如何来一步步的完成这个手机的制作了;
 
 我们创建Builder的接口类:
 
+```java
     interface IPhoneBuilder {
         void withCpu(String cpu);
         void withScreen(String screen);
@@ -109,9 +118,11 @@ Director类: 负责安排产品的构建过程
 
         IPhone build();
     }
+```
 
 下面, 我们创建```XiaomiPhoneBuilder```类:
 
+```java
     class XiaomiPhoneBuilder implements IPhoneBuilder {
 
         XiaomiPhone xiaomiPhone = new XiaomiPhone();
@@ -140,9 +151,11 @@ Director类: 负责安排产品的构建过程
             return this.xiaomiPhone;
         }
     }
+```
 
 我们基本上完整了工人 与 产品的角色了, 还差一个指挥者的角色.
 
+```java
     class PhoneDirector {
         private IPhoneBuilder builder = new XiaomiPhoneBuilder();
 
@@ -156,9 +169,11 @@ Director类: 负责安排产品的构建过程
             return builder.build();
         }
     }
+```
 
 我们看一下客户端如何调用的:
 
+```java
     public class Client {
         public static void main(String[] args) {
             PhoneDirector phoneDirector = new PhoneDirector();
@@ -167,14 +182,17 @@ Director类: 负责安排产品的构建过程
             phone.surfOnline();
         }
     }
+```
 
 这样我们就可以完成```红米```的创建过程了. 我们与现实流水线生产手机的对比:
 
+```java
     1、XiaomiPhone类相当于已经组装好的红米手机成品
     2、XiaomiPhoneBuilder相当于在流水线边上坐着的工人们.
     3、Director相当于工人们不知道怎么组装手机, 需要工段长来指挥完成.
     4、换句话说, Director也可以相当于流水线的位置, 处于流水线的最开始的位置的人负责安装主板, 处于最后一个位置的人负责拧紧螺丝, 最后装箱即可; 工业化生产基本上就根据流水线的位置, 工人们进行不同的操作;
     5、而我们的指挥者也扮演着与流水线相同的角色;
+```
 
 建造者模式的扩展性:
 
@@ -184,6 +202,7 @@ Director类: 负责安排产品的构建过程
 
 在实际的工作过程中, 我并没有碰到很符合该设计模式的使用场景, 因为PhoneDirector类中的方法属于硬编码进去的, 这基本上与使用抽象工厂来完成一个对象的创建, 并且对象创建的过程也可以在抽象工厂中体现. 所以, 我在工程中并没有使用该场景下的建造者模式. 但是对于一个参数很多情况下的对象, 使用建造者模式会给上层调用带来很大的便利性, 如果需要往该对象中增加一个属性, 我们也不需要重新写一个叠加的构造方法就能够满足需求, 客户端也只需要在链式调用的后面增加一个属性的设置即可. 比如:
 
+```java
     class User {
         private String name;
         private String address;
@@ -241,9 +260,11 @@ Director类: 负责安排产品的构建过程
             }
         } 
     }
+```
 
 那么我们客户端在调用的时候, 就会是这样的:
 
+```java
     public class Client {
         public static void main(String[] args) {
             User user = new User.UserBuilder().withAddress("深圳")
@@ -252,6 +273,7 @@ Director类: 负责安排产品的构建过程
             System.out.println(user.getAddress());
         }
     }
+```
 
 那么, 如果我们需要增加一个属性值 age, 我们也只需要在User中增加一个age属性 与 get方法, 同时修改Builder类; 而上层调用仅仅只需要在build()调用前, 增加一个withAge()的调用即可. 虽然这种方式对于扩展并不是开放的, 但是尽可能的减少了由于增加字段而使得上层代码改动很大的情况. 同时该模型的好处就是隐藏了生成对象的set功能, 使用建造者产生了不可变对象. 对于系统功能的稳定性具有很大的帮助.
 

@@ -15,6 +15,7 @@ tags: [设计准则, 里式替换原则]
 
 举个🌰: 如果我们在一些想不到的情况下, 需要继承ArrayList类, 而且重写了subList方法
 
+```java
     public class MyList<T> extends ArrayList<T> {
         @Override
         public List<T> subList(int fromIndex, int toIndex) {
@@ -26,9 +27,11 @@ tags: [设计准则, 里式替换原则]
             return subList;
         }
     }
+```
 
 那么会出现什么情况呢? 我们客户端先写一个父类的ArrayList程序
 
+```java
     public static void main(String[] args) throws Exception {
         List<String> list = new ArrayList<String>();
         for (int index = 0; index < 10; index++) {
@@ -39,9 +42,11 @@ tags: [设计准则, 里式替换原则]
         list.add(10 + "");
         System.out.println(subList);
     }
+```
 
 这个程序由于list.subList返回的List集合操作的还是原来list中的数据, 当我们调用原来数据的增删方法之后, 然后再调用subList那么会出现如下异常:
 
+```java
     Exception in thread "main" java.util.ConcurrentModificationException
 	at java.util.ArrayList$SubList.checkForComodification(ArrayList.java:1231)
 	at java.util.ArrayList$SubList.listIterator(ArrayList.java:1091)
@@ -51,9 +56,11 @@ tags: [设计准则, 里式替换原则]
 	at java.lang.String.valueOf(String.java:2982)
 	at java.io.PrintStream.println(PrintStream.java:821)
 	at com.terrylmay.springboot.Demo.main(Demo.java:25)
+```
 
 根据里式替换原则, 所有父类出现的地方都可以由子类透明的替换. 我们将程序替换之后看一下运行结果:
 
+```java
     public static void main(String[] args) throws Exception {
         List<String> list = new MyList<String>();
         for (int index = 0; index < 10; index++) {
@@ -64,6 +71,7 @@ tags: [设计准则, 里式替换原则]
         list.add(10 + "");
         System.out.println(subList);
     }
+```
 
 那么我们会发现, 程序已经不会报任何错误了.代码会输出:
 
@@ -77,6 +85,7 @@ tags: [设计准则, 里式替换原则]
 
 比如上面的例子, 我们可以重构为如下代码而不违背里式替换原则:
 
+```java
     public static class MyList<T> extends ArrayList<T> {
 
         public List<T> subListWithoutException(int fromIndex, int toIndex) {
@@ -88,11 +97,13 @@ tags: [设计准则, 里式替换原则]
             return subList;
         }
     }
+```
 
 ##### 3、当子类覆盖或实现父类的方法时，方法的前置条件（即方法的形参）要比父类方法的输入参数更宽松(本条含义经过测试发现已经不符合Java的语法了)
 
 本来可以使用Map的例子来说明问题的, 但是貌似JDK1.8之后就已经不支持这种写法了
 
+```java
     public interface IPersonService {
       List<Person> getPersonList(HashMap params);
     }
@@ -103,9 +114,11 @@ tags: [设计准则, 里式替换原则]
             return null;
         }
     }
+```
 
 ##### 4、当子类覆盖或者实现父类的方法时, 方法的返回类型要比父类方法的返回值类型要严格
 
+```java
     public abstract class IPersonService {
       abstract List<Person> getPersonList(HashMap params);
     }
@@ -115,17 +128,20 @@ tags: [设计准则, 里式替换原则]
             return null;
         }
     }
+```
 
 本来父类中使用了List<Person>作为返回值, 而在子类的实现中可以使用ArrayList<Person>进行返回, 这样当把IPersonService对象替换成PersonService对象的时候, 也不会发生异常情况
 
 同时, 在Java中如果我们要实现Cloneable接口, 那么我们同样可以返回比Object范围小的数据类型
 
+```java
     public class Person implements Cloneable {
         @Override
         public Person clone() {
             return this;
         }
     }
+```
 
 本来Object中Clone的定义是需要返回Object类型的.
 

@@ -30,6 +30,7 @@ tags: [设计准则, 责任链模式]
 
 我们基于上面的请求开始编写代码, 我们先定义一个抽象类, 用于定义nextHandler 以及处理请求的抽象接口:
 
+```java
     public abstract class LeaveRequestHandler {
         protected LeaveRequestHandler nextRequestHandler;
 
@@ -39,9 +40,11 @@ tags: [设计准则, 责任链模式]
 
         public abstract String handlerLeaveRequest(int leaveDays);
     }
+```
 
 然后我们分别根据需求定义PM处理类
 
+```java
     public class PMLeaveRequestHandler extends LeaveRequestHandler {
 
         public String handlerLeaveRequest(int leaveDays) {
@@ -56,9 +59,11 @@ tags: [设计准则, 责任链模式]
             return "Project Manager reject your leave request";
         }
     }
+```
 
 定义最小部门部长处理类:
 
+```java
     public class DLLeaveRequestHandler extends LeaveRequestHandler {
         public String handlerLeaveRequest(int leaveDays) {
             if (leaveDays <= 3) {
@@ -72,9 +77,11 @@ tags: [设计准则, 责任链模式]
             return "Department Leader reject your leave request";
         }
     }
+```
 
 定义上一级部门部长处理类:
 
+```java
     public class UpperDLLeaveRequestHandler extends LeaveRequestHandler {
         public String handlerLeaveRequest(int leaveDays) {
             if (leaveDays <= 5) {
@@ -88,9 +95,11 @@ tags: [设计准则, 责任链模式]
             return "Upper Department Leader reject your leave request";
         }
     }
+```
 
 定义总裁处理类:
 
+```java
     public class VPLeaveRequestHandler extends LeaveRequestHandler {
         public String handlerLeaveRequest(int leaveDays) {
 
@@ -105,9 +114,11 @@ tags: [设计准则, 责任链模式]
             return "VP reject your leave request";
         }
     }
+```
 
 这样对于责任链上的各个类已经完成了, 我们看一下客户端应该如何调用呢?
 
+```java
     public class Client {
         public static void main(String[] args) {
             LeaveRequestHandler pmLeaveRequestHandler = new PMLeaveRequestHandler();
@@ -141,9 +152,11 @@ tags: [设计准则, 责任链模式]
             System.out.println(result);
         }
     }
+```
 
 我们通过打印可以看到, 对于不同场景下的请求都有不同的处理类来进行处理:
 
+```java
     Project Manager approve your leave request
     Department Leader approve your leave request
     Department Leader approve your leave request
@@ -151,6 +164,7 @@ tags: [设计准则, 责任链模式]
     Upper Department Leader approve your leave request
     VP have approved your leave request
     VP reject your leave request
+```
 
 这样我们就完成了整个责任链模式的使用.
 

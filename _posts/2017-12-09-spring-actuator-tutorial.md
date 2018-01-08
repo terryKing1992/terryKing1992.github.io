@@ -11,11 +11,13 @@ SpringBoot Actuator为应用程序提供了很多Web服务, 通过这些服务�
 
 Maven项目中, 在pom的依赖项中增加
 
+```xml
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-actuator</artifactId>
         <version>1.5.6.RELEASE</version>
     </dependency>
+```
 
 版本看使用SpringBoot的版本情况。
 
@@ -25,6 +27,7 @@ Maven项目中, 在pom的依赖项中增加
 
 通过[http://localhost:8080/beans](http://localhost:8080/beans)接口获得每一个Bean的情况
 
+```json
     [
         {
             "context": "application:9080",
@@ -57,6 +60,7 @@ Maven项目中, 在pom的依赖项中增加
             ]
         }
     ]
+```
 
 会得到如上的JSON格式的Bean信息。
 
@@ -71,6 +75,7 @@ Maven项目中, 在pom的依赖项中增加
 
 通过/autoconfig清晰的看到Bean的初始化是否成功[http://localhost:8080/autoconfig](http://localhost:8080/autoconfig)
 
+```json
     {
         "positiveMatches": {
             ...
@@ -97,6 +102,7 @@ Maven项目中, 在pom的依赖项中增加
         }
         ...
     }
+```
 
 从上面的信息我们可以清晰的看到, jdbcTemplate这个Bean的创建条件就是当Spring容器中没有JdbcOperations该接口类型的Bean时自动创建, 而消息则说明没有找到任何JdbcOperations类型的Bean, 符合创建条件。所以JdbcTemplateAutoConfiguration#jdbcTemplate的Bean在positiveMatches列表中。
 
@@ -106,6 +112,7 @@ Maven项目中, 在pom的依赖项中增加
 
 通过[http://localhost:8080/env](http://localhost:8080/env)可以查看应用程序可用的所有环境属性的列表.
 
+```json
     {
         "profiles": [],
         "server.ports": {
@@ -179,6 +186,7 @@ Maven项目中, 在pom的依赖项中增加
             "spring.datasource.url": "jdbc:mysql://127.0.0.1:3306/spring_data_jpa_test"
         }
     }
+```
 
 从上面的信息中我们可以看到3大类型的数据, 系统属性、系统环境变量以及应用配置。
 
@@ -191,6 +199,7 @@ Maven项目中, 在pom的依赖项中增加
 
 通过[http://localhost:8080/configprops](http://localhost:8080/configprops)查看配置的一些具体信息
 
+```json
     {
     
         "serverProperties": {
@@ -220,6 +229,7 @@ Maven项目中, 在pom的依赖项中增加
             }
         }
     }
+```
 
 我们可以看到server的一些配置, 包括server的前缀。正如我们在application.properties中定义的server.port 以及 server.contextPath一样。同时该配置项也能够提供快速找到哪些属性可以配置。
 
@@ -227,6 +237,7 @@ Maven项目中, 在pom的依赖项中增加
 
 通过[http://localhost:8080/mappings](http://localhost:8080/mappings)查看当前web应用中的服务都有哪些
 
+```json
     {
         "/webjars/**": {
             "bean": "resourceHandlerMapping"
@@ -322,6 +333,7 @@ Maven项目中, 在pom的依赖项中增加
             "method": "public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter.invoke()"
         }
     }
+```
 
 该数据中除了我们定义的服务外, 还可以额外的看到actuator提供的接口以及如何调用。
 
@@ -331,6 +343,7 @@ Maven项目中, 在pom的依赖项中增加
 
 为了了解应用程序的内存、堆栈信息, actuator提供了/metrics 服务用来提供应用的快照信息
 
+```json
     {
         "mem": 356749,
         "mem.free": 198931,
@@ -379,6 +392,7 @@ Maven项目中, 在pom的依赖项中增加
         "counter.status.200.dump": 1,
         "counter.status.200.env": 1
     }
+```
 
 提供了垃圾收集器、内存、堆、类加载器、系统、线程池、数据源、http等相关信息
 
@@ -400,6 +414,7 @@ Maven项目中, 在pom的依赖项中增加
 
 尽管/metrics可以提供Web请求计数器和计时器，可是度量信息中缺少了更加详细的信息。 使用[http://localhost:8080/trace](http://localhost:8080/trace)查看包括请求方法、路径、时间戳、请求响应的头信息。
 
+```json
     [
         {
             "timestamp": 1512912854713,
@@ -429,11 +444,13 @@ Maven项目中, 在pom的依赖项中增加
             }
         }
     ]
+```
 
 该接口能够返回最近100次http请求的详细信息。
 
 ##### 3、使用/dump 服务获取程序线程的快照
 
+```json
     [
         {
             "threadName": "DestroyJavaVM",
@@ -455,9 +472,11 @@ Maven项目中, 在pom的依赖项中增加
         },
         ...
     ]
+```
 
 ##### 4、使用/health 服务查看应用程序的健康情况
 
+```json
     {
         "status": "UP",
         "diskSpace": {
@@ -472,7 +491,7 @@ Maven项目中, 在pom的依赖项中增加
             "hello": 1
         }
     }
-
+```
 
 以上基本上就是actuator提供的基本的服务 以及 服务的搭建过程。
 
