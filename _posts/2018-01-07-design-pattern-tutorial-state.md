@@ -29,7 +29,7 @@ tags: [设计准则, 状态模式]
 
 那么如果我们还是以最原始的冲动来编程, 可能我们最先想到的还是if else编程. 那么我们还是看一下如何来写代码?
 
-```Java
+```java
     public static void main(String[] args) {
         String initState = "初始化";
         String state = initState;
@@ -63,7 +63,7 @@ tags: [设计准则, 状态模式]
 
 2、定义PushMessageState的骨架实现
 
-```Java
+```java
     abstract class AbstractPushMessageState implements PushMessageState {
 
         PushMessageContext pushMessageContext;
@@ -80,7 +80,7 @@ tags: [设计准则, 状态模式]
 
 3、实现各个状态的行为实现
 
-```Java
+```java
 
     class InitPushMessageState extends AbstractPushMessageState {
 
@@ -110,7 +110,7 @@ tags: [设计准则, 状态模式]
 
 那么我们看一下客户端在怎么调用呢?
 
-```Java
+```java
     public class Client {
         public static void main(String[] args) {
             PushMessageContext pushMessageContext = new PushMessageContext();
