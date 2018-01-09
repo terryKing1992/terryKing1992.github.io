@@ -49,3 +49,157 @@ tags: [设计准则, 备忘录模式]
 4、而3步骤中的备份就相当于CareTaker中的Memento对象.
 
 5、如果上线失败, 需要进行回滚, 那么重新将上个版本的war包放入到webapps下相当于 Originator方法的recovery方法. 用于tomcat中该服务的原始服务的恢复.
+
+那么我们开始针对如上场景进行编程. 假设War包中包括以下信息: 服务的端口、服务的API列表、服务的上下文。
+
+我们先创建一个Originator类, 该类中维护了War包的一些状态:
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class ServiceWarOriginator {
+
+    private String contextPath;
+    private Integer serverPort;
+    private List<String> servicesList = new ArrayList<String>();
+
+
+    public ServiceWarMemento createMemento() {
+        List<String> copyServicesList = new ArrayList<String>(this.servicesList.size());
+        copyServicesList.addAll(this.servicesList);
+        ServiceWarMemento serviceWarMemento = new ServiceWarMemento(this.contextPath, this.serverPort, copyServicesList);
+        return serviceWarMemento;
+    }
+
+    public void recoveryServiceWar(ServiceWarMemento serviceWarMemento) {
+        this.contextPath = serviceWarMemento.getContextPath();
+        this.serverPort = serviceWarMemento.getServerPort();
+
+        List<String> copyServicesList = new ArrayList<String>(this.servicesList.size());
+        copyServicesList.addAll(serviceWarMemento.getServicesList());
+        this.servicesList = copyServicesList;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+
+    public Integer getServerPort() {
+        return serverPort;
+    }
+
+    public void setServerPort(Integer serverPort) {
+        this.serverPort = serverPort;
+    }
+
+    public void addService(String serviceName) {
+        this.servicesList.add(serviceName);
+    }
+}
+```
+
+当然我们也需要创建一个备忘录类, 用于存储原来数据的状态.
+
+```java
+import java.util.List;
+
+public class ServiceWarMemento {
+    private String contextPath;
+    private Integer serverPort;
+
+    private List<String> servicesList;
+
+    public ServiceWarMemento(String contextPath, Integer serverPort, List<String> servicesList) {
+        this.contextPath = contextPath;
+        this.serverPort = serverPort;
+        this.servicesList = servicesList;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public Integer getServerPort() {
+        return serverPort;
+    }
+
+    public List<String> getServicesList() {
+        return servicesList;
+    }
+}
+```
+
+最后, 我们需要实现一个责任人类, 负责完成备忘录的存储, 就是变更人员要知道保存的上个版本的War包放在了哪个目录下
+
+```java
+public class WarCareTaker {
+    private ServiceWarMemento serviceWarMemento;
+
+    public WarCareTaker(ServiceWarMemento serviceWarMemento) {
+        this.serviceWarMemento = serviceWarMemento;
+    }
+
+    public ServiceWarMemento getServiceWarMemento() {
+        return serviceWarMemento;
+    }
+
+    public void setServiceWarMemento(ServiceWarMemento serviceWarMemento) {
+        this.serviceWarMemento = serviceWarMemento;
+    }
+}
+```
+
+我们看一下如上实现的代码能够完成版本上线之后的回滚操作呢?
+
+```java
+public class Client {
+    public static void main(String []args) {
+        ServiceWarOriginator serviceWarOriginator = new ServiceWarOriginator();
+        serviceWarOriginator.setContextPath("/serverless/v1");
+        serviceWarOriginator.setServerPort(9080);
+        serviceWarOriginator.addService("登录");
+        serviceWarOriginator.addService("注册");
+
+        System.out.println("当前上下文根为" + serviceWarOriginator.getContextPath() + ", 端口为" + serviceWarOriginator.getServerPort());
+        System.out.println("当前版本的功能为" + serviceWarOriginator.getServices());
+
+        //现在我们要新上一个功能, 用户注销功能, 同时由于版本变动,
+        // 上下文根需要变为/serverless/v2。在部署之前, 我们要先将上个版本备份一下
+        WarCareTaker warCareTaker = new WarCareTaker(serviceWarOriginator.createMemento());
+        serviceWarOriginator.setContextPath("/serverless/v2");
+        serviceWarOriginator.addService("注销用户");
+
+        System.out.println("当前上下文根为" + serviceWarOriginator.getContextPath() + ", 端口为" + serviceWarOriginator.getServerPort());
+        System.out.println("当前版本的功能为" + serviceWarOriginator.getServices());
+
+        //当我们发现如果服务不可用的情况下, 我们需要回滚到上个版本的功能.
+        serviceWarOriginator.recoveryServiceWar(warCareTaker.getServiceWarMemento());
+        System.out.println("当前上下文根为" + serviceWarOriginator.getContextPath() + ", 端口为" + serviceWarOriginator.getServerPort());
+        System.out.println("当前版本的功能为" + serviceWarOriginator.getServices());
+    }
+}
+```
+
+这样我们就完成了一个备忘录模式的使用, 我们看日志输出就会发现, 系统回到了原始版本
+
+```
+当前上下文根为/serverless/v1, 端口为9080
+当前版本的功能为[登录, 注册]
+当前上下文根为/serverless/v2, 端口为9080
+当前版本的功能为[登录, 注册, 注销用户]
+当前上下文根为/serverless/v1, 端口为9080
+当前版本的功能为[登录, 注册]
+```
+
+### 实践心得
+
+备忘录模式有很多的变形方式, 本文中只是介绍了最为通用的备忘录模式, 每种方式都有自己的优缺点, 需要开发者根据经验来实施具体的备忘录变形模式。这个就需要多看源码来比较了哪种备忘录模式适合于哪种场景了.
+
+在有些场景下即使需要备份有些数据的状态, 但是在创建备忘录与恢复备忘录的过程都是异步的过程或者根本不在同一个系统中的时候, 也不可以强套备忘录模式实现, 毕竟都已经生成了不同的备忘录对象与Originator对象了.
+
+但是在单机程序中, 比如PS的操作历史记录、Git的节点回滚与遴选操作、代码编辑器的撤销操作都可以使用备忘录模式实现。
