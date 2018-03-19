@@ -47,7 +47,7 @@ K近邻算法一般的流程如下:
 ```
 1、随机生成一堆有符号整数
 2、将该整数两两结合, 生成一个[N, 2] N行两列的数组
-3、同时利用我们已知的知识, 在这[N, 2] 后面再加一列 该坐标对应的象限, 在坐标轴上的数据舍弃, 那么我们的数据就变成了[N, 3]的数组
+3、同时利用我们已知的知识,生成一个[N, 1]的分类(1象限, 2象限等等)
 4、编写KNN算法, 通过传入预测参数, 来预测坐标应该属于哪个象限.
 ```
 
@@ -151,66 +151,149 @@ K近邻算法一般的流程如下:
     print(labels)
 ```
 
-下面完成我们思路里面的, 将train_data 与 labels数据进行融合, 形成一个[N, 3]的数组, 我们经查找发现numpy中有个```np.concatenate((a,b),axis=1)```将[N, 2] 和 [N, 1]拼接起来
-
-```python
-    final_train_datas = np.concatenate((train_data, labels), axis=1) 
-```
-
-最终我们将数据拼接成了如下的样子:
-
-```
-[[ 99 -40   4]
- [ 78  -3   4]
- [ 64  35   1]
- ..., 
- [-90  94   2]
- [ 81 -77   4]
- [ 25  86   1]]
-```
 后面我们需要封装一下我们的函数, 最终得到的结果如下:
 
 ```python
-    # _*_ coding:utf-8 _*_
+# _*_ coding:utf-8 _*_
 
-    import random
-    import numpy as np
+import random
+import numpy as np
+import operator
 
+def generate_points_data():
+    count = 0
+    points = []
+    while True:
+        x = random.randint(-100, 100)
+        y = random.randint(-100, 100)
+        if x != 0 and y != 0:
+            count = count + 1
 
-    def generate_knn_data():
-        points = generate_points_data()
-        labels = generate_labels_data(points)
-        return np.concatenate((points, labels.reshape((-1, 1))), axis=1)
+        points.append(x)
+        points.append(y)
 
-
-    def generate_points_data():
-        count = 0
-        points = []
-        while True:
-            x = random.randint(-100, 100)
-            y = random.randint(-100, 100)
-            if x != 0 and y != 0:
-                count = count + 1
-
-            points.append(x)
-            points.append(y)
-
-            if count >= 500:
-                break
-        return np.array(points).reshape((-1, 2))
+        if count >= 500:
+            break
+    return np.array(points).reshape((-1, 2))
 
 
-    def generate_labels_data(points):
-        def label_lambda(item):
-            if item[0] > 0 and item[1] > 0:
-                return 1
-            elif item[0] > 0 and item[1] < 0:
-                return 4
-            elif item[0] < 0 and item[1] > 0:
-                return 2
-            else:
-                return 3
-        return np.array(list(map(label_lambda, points)))
+def generate_labels_data(points):
+    def label_lambda(item):
+        if item[0] > 0 and item[1] > 0:
+            return 1
+        elif item[0] > 0 and item[1] < 0:
+            return 4
+        elif item[0] < 0 and item[1] > 0:
+            return 2
+        else:
+            return 3
+    return np.array(list(map(label_lambda, points)))
 
-    print(generate_knn_data())
+points = generate_points_data()
+labels = generate_labels_data(points)
+```
+
+在开始开发KNN之前, 我们学习一个numpy的高级函数用法(对于我来说),快速生成多行相同的元素
+
+```python
+//该numpy的tile函数可以生成一个2行2列的元素都是[10, 30]的数据
+extend = np.tile([10, 30], (2, 1))
+```
+这样我们就可以根据tile函数来快速完成欧式距离的计算
+
+```python
+def predict(input_data):
+    train_data_size = points.shape[0]
+    extend_input_data = np.tile(input_data, (train_data_size, 1))
+    minus_result = extend_input_data - points
+    square_result = np.power(minus_result, 2)
+    add_result = np.sum(square_result, axis=1)
+
+    distances = np.sqrt(add_result)
+    sorted_distance = distances.argsort()
+
+    counter = {}
+
+    for index in range(10):
+        label_index = sorted_distance[index]
+        label = labels[label_index]
+
+        if label in counter:
+            counter[label] += 1
+        else:
+            counter[label] = 1
+
+    sorted_classes = sorted(counter.items(), key=operator.itemgetter(1), reverse=True)
+    return sorted_classes[0][0]
+
+print(predict([-11, 30]))
+```
+
+通过上面的代码, 我们就完成了欧式距离的5-NN算法以及最后的统计结果汇总, 得到最终的预测分类, 完整的代码如下:
+
+```python
+# _*_ coding:utf-8 _*_
+
+import random
+import numpy as np
+import operator
+
+def generate_points_data():
+    count = 0
+    points = []
+    while True:
+        x = random.randint(-100, 100)
+        y = random.randint(-100, 100)
+        if x != 0 and y != 0:
+            count = count + 1
+
+        points.append(x)
+        points.append(y)
+
+        if count >= 500:
+            break
+    return np.array(points).reshape((-1, 2))
+
+
+def generate_labels_data(points):
+    def label_lambda(item):
+        if item[0] > 0 and item[1] > 0:
+            return 1
+        elif item[0] > 0 and item[1] < 0:
+            return 4
+        elif item[0] < 0 and item[1] > 0:
+            return 2
+        else:
+            return 3
+    return np.array(list(map(label_lambda, points)))
+
+points = generate_points_data()
+labels = generate_labels_data(points)
+
+
+def predict(input_data):
+    train_data_size = points.shape[0]
+    extend_input_data = np.tile(input_data, (train_data_size, 1))
+    minus_result = extend_input_data - points
+    square_result = np.power(minus_result, 2)
+    add_result = np.sum(square_result, axis=1)
+
+    distances = np.sqrt(add_result)
+    sorted_distance = distances.argsort()
+
+    counter = {}
+
+    for index in range(10):
+        label_index = sorted_distance[index]
+        label = labels[label_index]
+
+        if label in counter:
+            counter[label] += 1
+        else:
+            counter[label] = 1
+
+    sorted_classes = sorted(counter.items(), key=operator.itemgetter(1), reverse=True)
+    return sorted_classes[0][0]
+
+print(predict([-11, 30]))
 ```
