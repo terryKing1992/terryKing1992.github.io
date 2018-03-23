@@ -14,7 +14,7 @@ MNIST的目标是要解决一个手写数字识别的10分类问题. 既然是�
 
 我们可以从如下网址下载本篇文章所需要的训练数据
 
-[digit数组地址](http://www.terrylmay.com/assets/datas/digits.zip)
+[digits数据下载地址](http://www.terrylmay.com/assets/datas/digits.zip)
 
 ## 开发KNN算法
 
