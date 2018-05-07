@@ -37,7 +37,7 @@ def cal_shannon_entropy(dataset):
     shanno_entropy = 0.0
     for label in labels_count_dict:
         prob = float(labels_count_dict[label] / dataset_count)
-        shanno_entropy = shanno_entropy - prob * log(prob)
+        shanno_entropy = shanno_entropy - prob * log(prob, 2)
         
     return shanno_entropy
 
@@ -46,4 +46,4 @@ dataset = [[2, 3, 4, '1'], [1, 3, 5, '2'], [5, 4, 1, '1'], [1, 3, 4, '2'], [4, 5
 print(cal_shannon_entropy(dataset))
 ```
 
-最后我们可以该数据集上的信息熵为: ```0.67301```
+最后我们可以该数据集上的信息熵为: ```0.9709505944546686```
