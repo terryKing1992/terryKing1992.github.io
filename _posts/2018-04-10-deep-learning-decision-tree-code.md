@@ -172,3 +172,60 @@ Gain = 0.6869615765973234 - (1/3 * 0.6365141682948128 + 1/3 * 0.6365141682948128
 ```
 
 后面再写程序直接求出来应该以哪个axis(列)为特征才能得到最大的信息增益.
+
+我们前面已经有了最基本的两个函数, 一个是求在数据集上的信息熵, 一个是根据维度以及取值划分数据集; 下面我们就把两个最基本的函数组合起来来选取最合适的特征作为决策树的节点
+
+首先, 我们肯定需要对每一个特征求信息增益; 那么我们肯定需要有两层循环来搞定: 第一层循环是特征的个数, 第二层循环是某一个特征的取值
+
+下面, 我们开始写代码尝试解这一道题:
+
+```python
+def pickup_the_best_axis(dataset):
+    # 首先我们需要知道该数据集有多少个特征, 即有多少列数据
+    feature_num = len(dataset[0])
+    # 我们同样需要知道数据集有多少行, 我们需要统计每一列中的取值都有哪些
+    dataset_rows = len(dataset)
+    
+    # 如果要计算信息增益, 我们还需要知道该数据集的原始的信息熵是多少
+    original_entropy = cal_shannon_entropy(dataset)
+    
+    info_gain = 0.0
+    pickup_feature_axis = -1
+    for feature_index in range(feature_num):
+        already_scan_values = []
+        current_axis_entropy = 0.0
+        for row_index in range(dataset_rows):
+            row_data = dataset[row_index]
+            current_axis_value_in_row = row_data[feature_index]
+            # 遍历整个数据集, 对于已经计算过的特征值的取值就略过, 然后将不同取值的信息熵乘以占比, 然后相加
+            if current_axis_value_in_row not in already_scan_values:
+                split_dataset_with_current_axis_value = split_dataset(dataset, feature_index, current_axis_value_in_row)
+                current_axis_entropy = current_axis_entropy + float(len(split_dataset_with_current_axis_value) / dataset_rows) * cal_shannon_entropy(split_dataset_with_current_axis_value)
+                already_scan_values.append(current_axis_value_in_row)
+                
+        # 得到当前特征的信息增益, 并选取特征中信息增益最大的一列
+        current_axis_info_gain = original_entropy - current_axis_entropy
+        print('第' + str(feature_index) + '个特征值作用下的信息增益为' + str(current_axis_info_gain))
+        if current_axis_info_gain > info_gain:
+            info_gain = current_axis_info_gain
+            pickup_feature_axis = feature_index
+            
+    return pickup_feature_axis
+
+print('最佳的特征列为:' + str(pickup_the_best_axis(dataset)))
+```
+
+我们可以看到最后的输出如下:
+
+```
+第0个特征值作用下的信息增益为0.0504474083025106
+第1个特征值作用下的信息增益为0.15903349924552634
+第2个特征值作用下的信息增益为0.2248634562240266
+第3个特征值作用下的信息增益为0.408960230187219
+第4个特征值作用下的信息增益为0.408960230187219
+最佳的特征列为:3
+```
+
+这样, 基本上我们就已经选出根节点的特征是```体重```；
+
+后面我们需要依据于体重分出来的两个数据集再分别求信息增益然后一直往下分, 知道没有特征可以选取之后才算结束.
