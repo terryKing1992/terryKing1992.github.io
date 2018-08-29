@@ -289,9 +289,10 @@ public class HelloWorldController {
 修改Java程序中的threadCount=4;测试其表现
 经测试发现, logback时间消耗在: ```48866ms```, 而log4j2时间消耗在: ```56178ms```
 
-修改Java程序中的threadCount=8; 由于机器的性能与硬盘不够, 只能将线程中的for循环减小为10W测试其表现
+修改Java程序中的threadCount=16; 由于机器的性能与硬盘不够, 只能将线程中的for循环减小为10W测试其表现
 经测试发现, logback时间消耗在: ```9868ms```, 而log4j2时间消耗在: ```12405ms```
 
 总的来说, Log4j2在同步输出日志上性能要稍微逊色于logback一点;
 
 
+使用异步来输出, 对于同样的修改Java程序中的threadCount=16; 由于机器的性能与硬盘不够, 只能将线程中的for循环减小为10W测试其表现。 log4j2竟然耗时: ```78531ms```, logback耗时: ```20921ms``` 这么看来, logback要比log4j2 性能要好很多啊. 谁说的log4j2比logback好的. 如程序有错误, 请大家帮忙指出一下, 非常感谢;
