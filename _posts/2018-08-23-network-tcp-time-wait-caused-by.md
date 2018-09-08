@@ -1,6 +1,6 @@
 ---
 layout: post
-title: TCP状态之开山篇
+title: TCP TIME_WAIT状态之开山篇
 date: 2018-09-04 22:30:00
 tags: [网络, 握手, TCP]
 ---
@@ -38,18 +38,23 @@ tags: [网络, 握手, TCP]
 
 10、当客户机收到服务端的FIN报文段之后, 客户机TCP状态会由FIN_WAIT2转换为TIME_WAIT状态, 同时会发送ACK给服务器端, 服务器端收到客户机的ACK之后, 状态会由LAST_ACK转变为CLOSE状态
 
+**注: 这张图少画出来一个状态, 就是CLOSING状态, 当客户机发送FIN给服务端,客户机进入FIN_WAIT1状态,  此时服务端也发送FIN给客户机, k客户机收到服务端的FIN报文之后, 发送ACK给服务端, 客户机就会进入CLOSING状态, 而服务器进入LAST_ACK阶段, 如果后面客户机收到ACK, 那么客户机就会直接变成TIME_WAIT状态, 而不会再进入FIN_WAIT2状态; 服务器收到ACK报文直接进入CLOSED状态; 可以理解为如果客户机发送完FIN之后, 随后, 服务器近乎同时发送FIN给对方的时候, 客户机并不会进入FIN_WAIT2状态;**
+
 对于TCP状态转换概念, 开头想了好长时间都没有想到一个完美的开头; 所以就先写一点关于TCP状态转换的认知, 后面慢慢的把这方面的东西补充起来之后再整合为一篇完整的文章吧;
 
 后面打算从几方面去探索
 
-1、在HTTP协议模型中, 什么时候客户端会产生TIME_WAIT, 什么时候服务端会产生TIME_WAIT;
+1、TIME_WAIT的作用
 
-2、TIME_WAIT在不同角色的机器上(客户端, 服务端)产生后对于系统的影响
+2、与TIME_WAIT相关参数的理解与设置之后对系统产生什么影响
 
-3、与TIME_WAIT相关参数的理解与设置之后对系统产生什么影响
+3、为什么TIME_WAIT的超时时间为2MSL, 理论依据是什么.
 
-4、在CLIENT => NGINX => upstream server => DB(Redis)模型中产生TIME_WAIT的影响, 以及如何调优
+4、在HTTP协议模型中, 什么时候客户端会产生TIME_WAIT, 什么时候服务端会产生TIME_WAIT;
 
-5、NGINX中的upstream设置keepalive 对于系统优化有什么优缺点
+5、TIME_WAIT在不同角色的机器上(客户端, 服务端)产生后对于系统的影响
 
-6、为什么TIME_WAIT的超时时间为2MSL, 理论依据是什么.
+6、在CLIENT => NGINX => upstream server => DB(Redis)模型中产生TIME_WAIT的影响, 以及如何调优
+
+7、NGINX中的upstream设置keepalive 对于系统优化有什么优缺点
+
