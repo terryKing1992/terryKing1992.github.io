@@ -51,10 +51,10 @@
     position: relative;
   }
 
-    .panel-cover--collapsed {
-      width: 100%;
-      max-width: none;
-    }
+  .panel-cover--collapsed {
+    width: 100%;
+    max-width: none;
+  }
 
   .panel-main__inner {
     display: table-cell;
@@ -106,71 +106,71 @@
 
   }
 
-    .navigation-wrapper {
-      display: none;
-      position: fixed;
-      top: 0;
-      right: 0;
-      left: 0;
-      width: 100%;
-      padding: 20px 0;
-      background: rgba($gray-darkest,.98);
-      border-bottom: 1px solid rgba(255,255,255,.15);
+  .navigation-wrapper {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 0;
+    background: rgba($gray-darkest, .98);
+    border-bottom: 1px solid rgba(255, 255, 255, .15);
 
-      &.visible {
-        display: block;
+    &.visible {
+      display: block;
+    }
+  }
+
+  .cover-navigation {
+    display: block;
+    position: relative;
+    float: left;
+    clear: left;
+    width: 100%;
+
+    .navigation {
+      display: block;
+      width: 100%;
+
+      li {
+        width: 80%;
+        margin-bottom: .4em;
       }
+
     }
 
-    .cover-navigation {
-      display: block;
-      position: relative;
-      float: left;
-      clear: left;
-      width: 100%;
+    &.navigation--social {
+      padding-top: 5px;
 
       .navigation {
-        display: block;
-        width: 100%;
 
         li {
-          width: 80%;
-          margin-bottom: .4em;
-        }
-
-      }
-
-      &.navigation--social {
-        padding-top: 5px;
-
-        .navigation {
-
-          li {
-            display: inline-block;
-            width: 25.8%;
-          }
-
+          display: inline-block;
+          width: 25.8%;
         }
 
       }
 
     }
 
-    .content-wrapper {
-      width: 80%;
-      max-width: none;
-      margin: 0 auto;
-    }
+  }
 
-    .content-wrapper__inner {
-      margin-right: 0;
-      margin-left: 0;
-    }
+  .content-wrapper {
+    width: 80%;
+    max-width: none;
+    margin: 0 auto;
+  }
 
-    .navigation__item {
-      width: 100%;
-      margin: 0 0 .4em 0;
-    }
+  .content-wrapper__inner {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .navigation__item {
+    width: 100%;
+    margin: 0 0 .4em 0;
+  }
 
 }
 

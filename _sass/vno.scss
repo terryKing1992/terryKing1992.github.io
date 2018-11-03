@@ -1,29 +1,21 @@
 @import 'bourbon/bourbon';
-
 // ------------------------------
 // THE BASICS
 // ------------------------------
-
 @import 'reset.scss';
 @import 'grid.scss';
 @import 'variables.scss';
-
 // ------------------------------
 // GLOBAL STYLES
 // ------------------------------
-
 @import 'global.scss';
-
 // ------------------------------
 // SECTIONS
 // ------------------------------
-
 @import 'sections/post.scss';
-
 // ------------------------------
 // COMPONENTS
 // ------------------------------
-
 @import 'components/panels.scss';
 @import 'components/buttons.scss';
 @import 'components/navigation.scss';
@@ -32,16 +24,12 @@
 @import 'components/post-list.scss';
 @import 'components/forms.scss';
 @import 'components/read-more.scss';
-
 // ------------------------------
 // MEDIA QUERIES
 // ------------------------------
-
 @import 'media-queries.scss';
-
 // ------------------------------
 // EXTRAS
 // ------------------------------
-
 @import 'animate.css';
 @import 'tomorrow.css';
