@@ -131,8 +131,8 @@ public class RedisExampleApplication {
 ``` text
 spring.profiles.active=cluster
  ```
-
-`application-standalone.properties` 文件内容如下:
+ 
+`application-standalone.properties` 文件内容如下: 
 
 ```
 spring.redis.host=localhost

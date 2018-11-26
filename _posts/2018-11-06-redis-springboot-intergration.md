@@ -10,9 +10,9 @@ tags: [redis, springboot]
 # SpringBoot环境 #
 
 ## 快速搭建一个SpringBoot工程 ##
-
+ 
 进入 `https://start.spring.io` 网站, 使用该网站初始化一个SpringBoot工程
-
+ 
 ![1706159233-5bdc6766067a1.png](https://upload-images.jianshu.io/upload_images/964723-a924ad71ce9cbfc4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ## 添加相关依赖 ##
