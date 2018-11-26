@@ -15,7 +15,7 @@ tags: [redis, springboot]
  
 ![1706159233-5bdc6766067a1.png](https://upload-images.jianshu.io/upload_images/964723-a924ad71ce9cbfc4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-## 添加相关依赖 ##
+## 添加相关依赖 ## 
 因为使用spring initializer已经帮我们把Redis的依赖建立好了; 但是由于我们要使用Jedis客户端访问Redis, 所以还需要添加Jedis的依赖;
 
 ```xml
